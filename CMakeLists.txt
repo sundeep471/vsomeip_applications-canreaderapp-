@@ -17,6 +17,7 @@ find_library(VSOMEIP3_LIBRARY vsomeip3)
 find_library(VSOMEIP3_CFG_LIBRARY vsomeip3-cfg)
 find_library(VSOMEIP3_SD_LIBRARY vsomeip3-sd)
 find_library(VSOMEIP3_E2E_LIBRARY vsomeip3-e2e)
+find_library(MOSQUITTO_LIBRARY mosquitto)
 
 # Link libraries
 target_link_libraries(vsomeipClient
@@ -24,6 +25,8 @@ target_link_libraries(vsomeipClient
     ${VSOMEIP3_CFG_LIBRARY}
     ${VSOMEIP3_SD_LIBRARY}
     ${VSOMEIP3_E2E_LIBRARY}
+    ${MOSQUITTO_LIBRARY}
+    pthread
 )
 
 install(TARGETS vsomeipClient DESTINATION bin)
