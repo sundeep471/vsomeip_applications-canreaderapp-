@@ -9,9 +9,13 @@
 #include <chrono>
 
 #include <vsomeip/vsomeip.hpp>
-#include "json.hpp"
+#include <nlohmann/json.hpp>
 
-// GLOBALS
+#include "mqtt_pub.h"
+
+/*
+ * GLOBALS
+ */
 const uint32_t MESSAGE_ID_FILTER = 0x3fc8002; // The specific message IID that we want to filter for.
 const size_t PAYLOAD_MIN_LENGTH = 20; // The minimum length of the payload that we expect in order to properly extract the CAN ID and CAN Data.
 const size_t CAN_ID_BYTE_START = 12; // The starting byte index within the payload.
@@ -19,6 +23,8 @@ const size_t CAN_ID_LENGTH = 4; // The length (in bytes) of the CAN ID within th
 const size_t CAN_DATA_BYTE_START = 16; // The starting byte index within the payload from which the CAN Data begins.
 const size_t CAN_DATA_LENGTH = 8; // The length (in bytes) of the CAN Data.
 const size_t HEX_WIDTH = 2; // The width used when printing hexadecimal numbers.
+mqtt msqt;
+
 // vsomeip application instance
 std::shared_ptr<vsomeip::application> app;
 
@@ -72,7 +78,7 @@ const std::string get_method_name(const vsomeip_v3::service_t service_id, const 
                             method_name = (*event)["name"].get<std::string>() + "(" + method_name + ")";
                         } else if ((*event).contains("shortname")) {
                             method_name = (*event)["shortname"].get<std::string>() + "(" + method_name + ")";
-                        } 
+                        }
                         goto done;
                     }
                 }
@@ -182,9 +188,19 @@ std::ostream& operator<<(std::ostream& stream, const vsomeip_v3::message& messag
     std::string service_key = std::to_string(message.get_service());
     auto json_service = json.find(service_key);
     std::string name{service_key};
+        uid_t user;
+        gid_t group;
+
     if (json_service != json.end()) {
         name = (*json_service)["name"];
     }
+
+        vsomeip_sec_client_t sec_client = message.get_sec_client();
+        if (sec_client.client_type == VSOMEIP_CLIENT_UDS) {
+        user = sec_client.client.uds_client.user;
+                group = sec_client.client.uds_client.group;
+        }
+
     stream << "vsomeip_v3::message{"
            << "id=" << message.get_message() << ", "
            << "service=" << get_service_name(message.get_service()) << ", "
@@ -202,8 +218,8 @@ std::ostream& operator<<(std::ostream& stream, const vsomeip_v3::message& messag
            << "payload=" << *(message.get_payload()) << ", "
            << "check_result=" << message.get_check_result() << "/" << hex(message.get_check_result()) << ", "
            << "is_valid_crc=" << message.is_valid_crc() << ", "
-           << "uid=" << message.get_uid() << ", "
-           << "gid=" << message.get_gid() << ", "
+           << "uid=" << user << ", "
+           << "gid=" << group << ", "
            << "env=" << message.get_env() << ", "
            << "sec_client=" << message.get_sec_client() << "}";
     return stream;
@@ -248,29 +264,48 @@ void my_state_handler(vsomeip_v3::state_type_e ste) {
     std::cout << "HANDLER:  state_handler(" << get_state_type(ste) << ")" << std::endl;
 }
 
+std::string formatPayload(const unsigned char* payload, int start, int length) {
+    std::stringstream ss;
+
+    for (int i = start; i < start + length; ++i) {
+        ss << std::setw(2) << std::setfill('0') << static_cast<int>(payload[i]);
+        if (i < start + length - 1) {
+            ss << " ";
+        }
+    }
+
+    return ss.str();
+}
+
 void my_message_handler(const std::shared_ptr<vsomeip_v3::message>& message) {
+    std::string canId;
+    std::string canData;
+        std::ostringstream oss;  // Create a string stream object
+
     auto payload = message->get_payload()->get_data();
 
     // If the payload is long enough
     if (message->get_payload()->get_length() >= 20) {
         // Extracting and printing the CAN ID in the correct order
-        std::cout << "CAN ID = ";
-        std::cout << std::hex << std::uppercase;
         // CAN ID is located in 4 bytes starting from the 12th byte of the payload
-	for (int i = 11; i >= 8; --i) {
-            std::cout << std::setw(2) << std::setfill('0') << static_cast<int>(payload[i]);
+
+            std::cout << "CAN ID = ";
+            std::cout << std::hex << std::uppercase;
+            for (int i = 11; i >= 8; --i) {
+                std::cout << std::setw(2) << std::setfill('0') << static_cast<int>(payload[i]);
             if (i > 8) std::cout << " "; // Leave a space except the last byte
-        }
-        std::cout << std::endl;
+            }
 
         // Printing CAN Data
-        std::cout << "CAN Data = ";
+            std::cout << "CAN Data = ";
         for (int i = 12; i < 20; ++i) { // CAN Data starts from the 12th byte and is 8 bytes long
-            std::cout << std::setw(2) << std::setfill('0') << static_cast<int>(payload[i]);
-            if (i < 19) std::cout << " ";
-        }
-        std::cout << std::endl;
+                std::cout << std::setw(2) << std::setfill('0') << static_cast<int>(payload[i]);
+                if (i < 19) std::cout << " ";
+            }
+            std::cout << std::endl;
     }
+    //m.publish("test");
+    msqt.publish("CANID = 03FC8002", "test/t1", 17);
 }
 
 void my_availability_handler(vsomeip_v3::service_t service, vsomeip_v3::instance_t instance, bool available) {
@@ -371,10 +406,10 @@ void my_async_subscription_handler_sec(vsomeip_v3::client_t client, const vsomei
 }
 
 int main() {
-	std::cout << "Creating application..." << std::endl;
-	app = vsomeip::runtime::get()->create_application("Client1");
+    std::cout << "Creating application..." << std::endl;
+    app = vsomeip::runtime::get()->create_application("Client1");
 
-	std::cout << "Initializing application..." << std::endl;
+    std::cout << "Initializing application..." << std::endl;
     /*
     2000-01-01 00:23:48.288049 [info] Using configuration file: "./vsomeip.json".
     2000-01-01 00:23:48.288069 [info] Parsed vsomeip configuration in 99ms
@@ -386,10 +421,11 @@ int main() {
     2000-01-01 00:23:48.288229 [info] Service Discovery module loaded.
     2000-01-01 00:23:48.288249 [info] Application(Client1, 0399) is initialized (11, 100).
     */
-	app->init();
+    msqt.init();
+    app->init();
 
     std::cout << "Reading service config..." << std::endl;
-    
+
     json = nlohmann::json::parse(std::ifstream("service.catalog.json"));
 
     app->set_watchdog_handler(my_watchdog_handler, std::chrono::seconds(10));
@@ -404,7 +440,7 @@ int main() {
     app->register_availability_handler(vsomeip_v3::ANY_SERVICE, vsomeip_v3::ANY_INSTANCE, my_availability_state_handler, vsomeip_v3::ANY_MAJOR, vsomeip_v3::ANY_MINOR);
     app->register_async_subscription_handler(vsomeip_v3::ANY_SERVICE, vsomeip_v3::ANY_INSTANCE, vsomeip_v3::ANY_EVENTGROUP, my_async_subscription_handler_sec);
 
-	std::cout << "Starting application..." << std::endl;
-	app->start();
-	std::cout << "Exitting application." << std::endl;
+        std::cout << "Starting application..." << std::endl;
+        app->start();
+        std::cout << "Exiting application." << std::endl;
 }
