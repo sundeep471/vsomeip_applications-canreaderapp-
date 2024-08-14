@@ -267,6 +267,9 @@ void my_state_handler(vsomeip_v3::state_type_e ste) {
 std::string formatPayload(const unsigned char* payload, int start, int length) {
     std::stringstream ss;
 
+    // Set the formatting for the stringstream
+    ss << std::hex << std::uppercase << std::setw(2) << std::setfill('0');
+
     for (int i = start; i < start + length; ++i) {
         ss << std::setw(2) << std::setfill('0') << static_cast<int>(payload[i]);
         if (i < start + length - 1) {
@@ -288,7 +291,7 @@ void my_message_handler(const std::shared_ptr<vsomeip_v3::message>& message) {
     if (message->get_payload()->get_length() >= 20) {
         // Extracting and printing the CAN ID in the correct order
         // CAN ID is located in 4 bytes starting from the 12th byte of the payload
-
+        // std::cout << std::hex << std::uppercase; 
         canId = formatPayload(payload, 11, 4);
         std::cout << "CAN ID = " << canId;;
         /*
@@ -300,18 +303,24 @@ void my_message_handler(const std::shared_ptr<vsomeip_v3::message>& message) {
         */
         std::cout << " ";
 
-        // Printing CAN Data
-        std::cout << "CAN Data = ";
+        canData = formatPayload(payload, 12, 8);
+        /*
         for (int i = 12; i < 20; ++i) { // CAN Data starts from the 12th byte and is 8 bytes long
             std::cout << std::setw(2) << std::setfill('0') << static_cast<int>(payload[i]);
             if (i < 19) std::cout << " ";
         }
+        */
+        // Printing CAN Data
+        std::cout << "CAN Data = " << canData;
+
         std::cout << std::endl;
     } else {
         std::cout << "Not 20 Bytes: " << message->get_payload()->get_length() << payload << std::endl;
     }
     //m.publish("test");
-    //msqt.publish("CANID = 03FC8002", "test/t1", 17);
+    std::cout << "X1" << sts::endl;
+    msqt.publish("CANID = 03FC8002", "test/t1", 17);
+    std::cout << "X2" << sts::endl;
 }
 
 void my_availability_handler(vsomeip_v3::service_t service, vsomeip_v3::instance_t instance, bool available) {
