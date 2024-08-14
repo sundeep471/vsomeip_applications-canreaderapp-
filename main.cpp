@@ -188,18 +188,18 @@ std::ostream& operator<<(std::ostream& stream, const vsomeip_v3::message& messag
     std::string service_key = std::to_string(message.get_service());
     auto json_service = json.find(service_key);
     std::string name{service_key};
-        uid_t user;
-        gid_t group;
+    uid_t user;
+    gid_t group;
 
     if (json_service != json.end()) {
         name = (*json_service)["name"];
     }
 
-        vsomeip_sec_client_t sec_client = message.get_sec_client();
-        if (sec_client.client_type == VSOMEIP_CLIENT_UDS) {
+    vsomeip_sec_client_t sec_client = message.get_sec_client();
+    if (sec_client.client_type == VSOMEIP_CLIENT_UDS) {
         user = sec_client.client.uds_client.user;
-                group = sec_client.client.uds_client.group;
-        }
+        group = sec_client.client.uds_client.group;
+    }
 
     stream << "vsomeip_v3::message{"
            << "id=" << message.get_message() << ", "
@@ -295,6 +295,7 @@ void my_message_handler(const std::shared_ptr<vsomeip_v3::message>& message) {
             std::cout << std::setw(2) << std::setfill('0') << static_cast<int>(payload[i]);
            if (i > 8) std::cout << " "; // Leave a space except the last byte
         }
+        std::cout << " ";
 
         // Printing CAN Data
         std::cout << "CAN Data = ";
@@ -304,7 +305,7 @@ void my_message_handler(const std::shared_ptr<vsomeip_v3::message>& message) {
         }
         std::cout << std::endl;
     } else {
-        std::cout << "Not 20 Bytes:" << payload;
+        std::cout << "Not 20 Bytes: " << message->get_payload()->get_length() << payload << std::endl;
     }
     //m.publish("test");
     //msqt.publish("CANID = 03FC8002", "test/t1", 17);
