@@ -318,9 +318,9 @@ void my_message_handler(const std::shared_ptr<vsomeip_v3::message>& message) {
         std::cout << "Not 20 Bytes: " << message->get_payload()->get_length() << payload << std::endl;
     }
     //m.publish("test");
-    std::cout << "X1" << sts::endl;
-    msqt.publish("CANID = 03FC8002", "test/t1", 17);
-    std::cout << "X2" << sts::endl;
+    std::cout << "X1" << std::endl;
+    msqt.publish(canId, "test/t1", canId.size());
+    std::cout << "X2" << std::endl;
 }
 
 void my_availability_handler(vsomeip_v3::service_t service, vsomeip_v3::instance_t instance, bool available) {
