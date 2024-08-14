@@ -321,7 +321,7 @@ void my_message_handler(const std::shared_ptr<vsomeip_v3::message>& message) {
     
     std::cout << "X1" << std::endl;
     
-    std:cout << canId << std::endl;
+    std::cout << canId << std::endl;
     canId="test message padded data";
     std::cout << canId << std::endl;
     std::cout << canId.size() << std::endl;
