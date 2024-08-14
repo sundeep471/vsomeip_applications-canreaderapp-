@@ -296,16 +296,16 @@ void my_message_handler(const std::shared_ptr<vsomeip_v3::message>& message) {
             if (i > 8) std::cout << " "; // Leave a space except the last byte
             }
 
-        // Printing CAN Data
+            // Printing CAN Data
             std::cout << "CAN Data = ";
-        for (int i = 12; i < 20; ++i) { // CAN Data starts from the 12th byte and is 8 bytes long
+            for (int i = 12; i < 20; ++i) { // CAN Data starts from the 12th byte and is 8 bytes long
                 std::cout << std::setw(2) << std::setfill('0') << static_cast<int>(payload[i]);
                 if (i < 19) std::cout << " ";
             }
             std::cout << std::endl;
     }
     //m.publish("test");
-    msqt.publish("CANID = 03FC8002", "test/t1", 17);
+    //msqt.publish("CANID = 03FC8002", "test/t1", 17);
 }
 
 void my_availability_handler(vsomeip_v3::service_t service, vsomeip_v3::instance_t instance, bool available) {
