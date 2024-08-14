@@ -22,7 +22,7 @@ public:
             return;
         }
 
-        //mosquitto_publish(mosq, NULL, "test/t1", 6, "Hello", 0, false);
+        //int rc = mosquitto_publish(mosq, NULL, "test/t1", 6, "Hello", 0, false);
         //mosquitto_publish(mosq, nullptr, topic.c_str(), len, msg.c_str(), 0, false);
         int rc = mosquitto_publish(mosq, nullptr, topic.c_str(), len, msg.c_str(), 0, false);
         if (rc != MOSQ_ERR_SUCCESS) {
