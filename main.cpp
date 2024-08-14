@@ -289,7 +289,7 @@ void my_message_handler(const std::shared_ptr<vsomeip_v3::message>& message) {
         // Extracting and printing the CAN ID in the correct order
         // CAN ID is located in 4 bytes starting from the 12th byte of the payload
 
-        canId = formatPayload(payload, 11, 4)
+        canId = formatPayload(payload, 11, 4);
         std::cout << "CAN ID = " << canId;;
         /*
         std::cout << std::hex << std::uppercase;
