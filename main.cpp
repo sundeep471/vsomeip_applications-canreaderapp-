@@ -318,8 +318,15 @@ void my_message_handler(const std::shared_ptr<vsomeip_v3::message>& message) {
         std::cout << "Not 20 Bytes: " << message->get_payload()->get_length() << payload << std::endl;
     }
     //m.publish("test");
+    
     std::cout << "X1" << std::endl;
-    msqt.publish(canId, "test/t1", canId.size());
+    
+    std:cout << canId << std::endl;
+    canId="test message padded data";
+    std:cout << canId << std::endl;
+    std::cout << canId.size() << std::endl;
+    
+    msqt.publish(canId, "test/t1", 25); //canId.size());
     std::cout << "X2" << std::endl;
 }
 
