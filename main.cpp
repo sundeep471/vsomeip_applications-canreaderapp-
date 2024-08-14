@@ -280,7 +280,7 @@ std::string formatPayload(const unsigned char* payload, int start, int length) {
 void my_message_handler(const std::shared_ptr<vsomeip_v3::message>& message) {
     std::string canId;
     std::string canData;
-        std::ostringstream oss;  // Create a string stream object
+    std::ostringstream oss;  // Create a string stream object
 
     auto payload = message->get_payload()->get_data();
 
@@ -289,20 +289,22 @@ void my_message_handler(const std::shared_ptr<vsomeip_v3::message>& message) {
         // Extracting and printing the CAN ID in the correct order
         // CAN ID is located in 4 bytes starting from the 12th byte of the payload
 
-            std::cout << "CAN ID = ";
-            std::cout << std::hex << std::uppercase;
-            for (int i = 11; i >= 8; --i) {
-                std::cout << std::setw(2) << std::setfill('0') << static_cast<int>(payload[i]);
-            if (i > 8) std::cout << " "; // Leave a space except the last byte
-            }
+        std::cout << "CAN ID = ";
+        std::cout << std::hex << std::uppercase;
+        for (int i = 11; i >= 8; --i) {
+            std::cout << std::setw(2) << std::setfill('0') << static_cast<int>(payload[i]);
+           if (i > 8) std::cout << " "; // Leave a space except the last byte
+        }
 
-            // Printing CAN Data
-            std::cout << "CAN Data = ";
-            for (int i = 12; i < 20; ++i) { // CAN Data starts from the 12th byte and is 8 bytes long
-                std::cout << std::setw(2) << std::setfill('0') << static_cast<int>(payload[i]);
-                if (i < 19) std::cout << " ";
-            }
-            std::cout << std::endl;
+        // Printing CAN Data
+        std::cout << "CAN Data = ";
+        for (int i = 12; i < 20; ++i) { // CAN Data starts from the 12th byte and is 8 bytes long
+            std::cout << std::setw(2) << std::setfill('0') << static_cast<int>(payload[i]);
+            if (i < 19) std::cout << " ";
+        }
+        std::cout << std::endl;
+    } else {
+        std::cout << "Not 20 Bytes:" << payload;
     }
     //m.publish("test");
     //msqt.publish("CANID = 03FC8002", "test/t1", 17);
