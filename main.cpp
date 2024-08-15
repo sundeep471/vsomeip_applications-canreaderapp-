@@ -277,56 +277,45 @@ void my_message_handler(const std::shared_ptr<vsomeip_v3::message>& message) {
         return;
     }
 
-    try {        
-    // If the payload is long enough
-    if (message->get_payload()->get_length() >= 20) {
-        // Extracting and printing the CAN ID in the correct order
-        // CAN ID is located in 4 bytes starting from the 12th byte of the payload
-        std::cout << "CAN ID = ";
-        std::cout << std::hex << std::uppercase;
-                canId << std::hex << std::uppercase << std::setw(2) << std::setfill('0');
-        for (int i = 11; i >= 8; --i) {
-                        canId << std::setw(2) << std::setfill('0') << static_cast<int>(payload[i]);
-            std::cout << std::setw(2) << std::setfill('0') << static_cast<int>(payload[i]);
-            if (i > 8) std::cout << " "; // Leave a space except the last byte
+    try {
+        if (message->get_payload()->get_length() >= 20) { // If the payload is long enough
+            // Extracting and printing the CAN ID in the correct order
+            // CAN ID is located in 4 bytes starting from the 12th byte of the payload
+            std::cout << "CAN ID = ";
+            std::cout << std::hex << std::uppercase;
+            canId << std::hex << std::uppercase << std::setw(2) << std::setfill('0');
+            for (int i = 11; i >= 8; --i) {
+                canId << std::setw(2) << std::setfill('0') << static_cast<int>(payload[i]);
+                std::cout << std::setw(2) << std::setfill('0') << static_cast<int>(payload[i]);
+                if (i > 8) std::cout << " "; // Leave a space except the last byte
+            }
+            std::cout << std::endl;
+            std::cout << "X1\n";
+            msg = canId.str();
+            std::cout << "X2\n";
+            msqt_pub.publish(static_cast<const void*>(msg.c_str()), msg.size());
+            std::cout << "X3\n";
+
+            std::cout << "CAN Data = ";
+            canData << std::hex << std::uppercase << std::setw(2) << std::setfill('0');
+            for (int i = 12; i < 20; ++i) { // CAN Data starts from the 12th byte and is 8 bytes long
+                canData << std::setw(2) << std::setfill('0') << static_cast<int>(payload[i]);
+                std::cout << std::setw(2) << std::setfill('0') << static_cast<int>(payload[i]);
+                if (i < 19) std::cout << " ";
+            }
+            std::cout << std::endl;
+            //std::cout << msg << std::endl;
+            std::cout << "Y1\n";
+            msg = canData.str();
+            std::cout << "Y2\n";
+            msqt_pub.publish(static_cast<const void*>(msg.c_str()), msg.size());
+            std::cout << "Y3\n";    
+        } else {
+            std::cout << "Not 20 Bytes: " << message->get_payload()->get_length() << payload << std::endl;
         }
-
-        std::cout << msg << std::endl;
-        std::cout << "X1\n";
-
-        msg = canId.str();
-        std::cout << "X2\n";
-        msqt_pub.publish(static_cast<const void*>(msg.c_str()), msg.size());
-        std::cout << "X3\n";
-
-        std::cout << "CAN Data = ";
-        canData << std::hex << std::uppercase << std::setw(2) << std::setfill('0');
-        for (int i = 12; i < 20; ++i) { // CAN Data starts from the 12th byte and is 8 bytes long
-            canData << std::setw(2) << std::setfill('0') << static_cast<int>(payload[i]);
-            std::cout << std::setw(2) << std::setfill('0') << static_cast<int>(payload[i]);
-            if (i < 19) std::cout << " ";
-        }
-
-        std::cout << msg << std::endl;
-        std::cout << "Y1\n";
-
-        msg = canData.str();
-        std::cout << "Y2\n";
-        msqt_pub.publish(static_cast<const void*>(msg.c_str()), msg.size());
-        std::cout << "Y3\n";
-
-        std::cout << std::endl;
-    
-    } else {
-        std::cout << "Not 20 Bytes: " << message->get_payload()->get_length() << payload << std::endl;
-    }
-    
     } catch (std::exception& e) {
         std::cerr << "Exception caught : " << e.what() << std::endl;
     }
-
-    //msqt_pub.publish(canId, "test/t1", 25); //canId.size());
-    //std::cout << "X2" << std::endl;
 }
 
 void my_availability_handler(vsomeip_v3::service_t service, vsomeip_v3::instance_t instance, bool available) {
