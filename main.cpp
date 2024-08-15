@@ -23,7 +23,7 @@ const size_t CAN_ID_LENGTH = 4; // The length (in bytes) of the CAN ID within th
 const size_t CAN_DATA_BYTE_START = 16; // The starting byte index within the payload from which the CAN Data begins.
 const size_t CAN_DATA_LENGTH = 8; // The length (in bytes) of the CAN Data.
 const size_t HEX_WIDTH = 2; // The width used when printing hexadecimal numbers.
-mqtt msqt;
+mqtt msqt_pub;
 
 // vsomeip application instance
 std::shared_ptr<vsomeip::application> app;
@@ -264,25 +264,10 @@ void my_state_handler(vsomeip_v3::state_type_e ste) {
     std::cout << "HANDLER:  state_handler(" << get_state_type(ste) << ")" << std::endl;
 }
 
-std::string formatPayload(const unsigned char* payload, int start, int length) {
-    std::stringstream ss;
-
-    // Set the formatting for the stringstream
-    ss << std::hex << std::uppercase << std::setw(2) << std::setfill('0');
-
-    for (int i = start; i < start + length; ++i) {
-        ss << std::setw(2) << std::setfill('0') << static_cast<int>(payload[i]);
-        if (i < start + length - 1) {
-            ss << " ";
-        }
-    }
-
-    return ss.str();
-}
-
 void my_message_handler(const std::shared_ptr<vsomeip_v3::message>& message) {
-    std::string canId;
-    std::string canData;
+    std::stringstream canId;
+    std::stringstream canData;
+        std::string msg;
     std::ostringstream oss;  // Create a string stream object
 
     auto payload = message->get_payload()->get_data();
@@ -291,43 +276,36 @@ void my_message_handler(const std::shared_ptr<vsomeip_v3::message>& message) {
     if (message->get_payload()->get_length() >= 20) {
         // Extracting and printing the CAN ID in the correct order
         // CAN ID is located in 4 bytes starting from the 12th byte of the payload
-        // std::cout << std::hex << std::uppercase; 
-        canId = formatPayload(payload, 11, 4);
-        std::cout << "CAN ID = " << canId;;
-        /*
+        std::cout << "CAN ID = ";
         std::cout << std::hex << std::uppercase;
+                canId << std::hex << std::uppercase << std::setw(2) << std::setfill('0');
         for (int i = 11; i >= 8; --i) {
+                        canId << std::setw(2) << std::setfill('0') << static_cast<int>(payload[i]);
             std::cout << std::setw(2) << std::setfill('0') << static_cast<int>(payload[i]);
-           if (i > 8) std::cout << " "; // Leave a space except the last byte
+            if (i > 8) std::cout << " "; // Leave a space except the last byte
         }
-        */
-        std::cout << " ";
+                std::cout << msg << std::endl;
+                msg = canId.str();
+        msqt_pub.publish(static_cast<const void*>(msg.c_str()), msg.size());
 
-        canData = formatPayload(payload, 12, 8);
-        /*
+                std::cout << "CAN Data = ";
+                canData << std::hex << std::uppercase << std::setw(2) << std::setfill('0');
         for (int i = 12; i < 20; ++i) { // CAN Data starts from the 12th byte and is 8 bytes long
+                        canData << std::setw(2) << std::setfill('0') << static_cast<int>(payload[i]);
             std::cout << std::setw(2) << std::setfill('0') << static_cast<int>(payload[i]);
             if (i < 19) std::cout << " ";
         }
-        */
-        // Printing CAN Data
-        std::cout << "CAN Data = " << canData;
+                std::cout << msg << std::endl;
+                msg = canData.str();
+                msqt_pub.publish(static_cast<const void*>(msg.c_str()), msg.size());
 
         std::cout << std::endl;
     } else {
         std::cout << "Not 20 Bytes: " << message->get_payload()->get_length() << payload << std::endl;
     }
-    //m.publish("test");
-    
-    std::cout << "X1" << std::endl;
-    
-    std::cout << canId << std::endl;
-    canId="test message padded data";
-    std::cout << canId << std::endl;
-    std::cout << canId.size() << std::endl;
-    
-    msqt.publish(canId, "test/t1", 25); //canId.size());
-    std::cout << "X2" << std::endl;
+
+    //msqt_pub.publish(canId, "test/t1", 25); //canId.size());
+    //std::cout << "X2" << std::endl;
 }
 
 void my_availability_handler(vsomeip_v3::service_t service, vsomeip_v3::instance_t instance, bool available) {
@@ -433,17 +411,17 @@ int main() {
 
     std::cout << "Initializing application..." << std::endl;
     /*
-    2000-01-01 00:23:48.288049 [info] Using configuration file: "./vsomeip.json".
-    2000-01-01 00:23:48.288069 [info] Parsed vsomeip configuration in 99ms
-    2000-01-01 00:23:48.288069 [info] Configuration module loaded.
-    2000-01-01 00:23:48.288079 [info] Initializing vsomeip (3.3.8) application "Client1".
-    2000-01-01 00:23:48.288109 [info] Instantiating routing manager [Host].
-    2000-01-01 00:23:48.288169 [info] create_routing_root: Routing root @ /var/vsomeip-0
-    2000-01-01 00:23:48.288209 [info] Service Discovery enabled. Trying to load module.
-    2000-01-01 00:23:48.288229 [info] Service Discovery module loaded.
-    2000-01-01 00:23:48.288249 [info] Application(Client1, 0399) is initialized (11, 100).
+    [info] Using configuration file: "./vsomeip.json".
+    [info] Parsed vsomeip configuration in 99ms
+    [info] Configuration module loaded.
+    [info] Initializing vsomeip (3.3.8) application "Client1".
+    [info] Instantiating routing manager [Host].
+    [info] create_routing_root: Routing root @ /var/vsomeip-0
+    [info] Service Discovery enabled. Trying to load module.
+    [info] Service Discovery module loaded.
+    [info] Application(Client1, 0399) is initialized (11, 100).
     */
-    msqt.init();
+    msqt_pub.init();
     app->init();
 
     std::cout << "Reading service config..." << std::endl;
