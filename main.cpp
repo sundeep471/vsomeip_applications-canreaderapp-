@@ -267,7 +267,7 @@ void my_state_handler(vsomeip_v3::state_type_e ste) {
 void my_message_handler(const std::shared_ptr<vsomeip_v3::message>& message) {
     std::stringstream canId;
     std::stringstream canData;
-        std::string msg;
+    std::string msg;
     std::ostringstream oss;  // Create a string stream object
 
     //auto payload = message->get_payload()->get_data();
@@ -291,14 +291,14 @@ void my_message_handler(const std::shared_ptr<vsomeip_v3::message>& message) {
             if (i > 8) std::cout << " "; // Leave a space except the last byte
         }
 
-        std::cout << "X1";
+        std::cout << "X1\n";
         std::cout << msg << std::endl;
-        std::cout << "X2";
+        std::cout << "X2\n";
 
         msg = canId.str();
-        std::cout << "X3";
+        std::cout << "X3\n";
         msqt_pub.publish(static_cast<const void*>(msg.c_str()), msg.size());
-        std::cout << "X4";
+        std::cout << "X4\n";
 
         std::cout << "CAN Data = ";
         canData << std::hex << std::uppercase << std::setw(2) << std::setfill('0');
@@ -308,14 +308,14 @@ void my_message_handler(const std::shared_ptr<vsomeip_v3::message>& message) {
             if (i < 19) std::cout << " ";
         }
 
-        std::cout << "Y1";
+        std::cout << "Y1\n";
         std::cout << msg << std::endl;
-        std::cout << "Y2";
+        std::cout << "Y2\n";
 
         msg = canData.str();
-        std::cout << "Y3";
+        std::cout << "Y3\n";
         msqt_pub.publish(static_cast<const void*>(msg.c_str()), msg.size());
-        std::cout << "Y4";
+        std::cout << "Y4\n";
 
         std::cout << std::endl;
     
