@@ -42,6 +42,7 @@ public:
         if (rc != MOSQ_ERR_SUCCESS) {
             std::cerr << "Client could not connect to broker! Error Code: " << rc << "\n";
             mosquitto_destroy(mosq);
+            mosq = nullptr;
         } else {
             std::cout << "We are now connected to the broker!\n";
         }
@@ -58,8 +59,11 @@ public:
         //mosquitto_publish(mosq, nullptr, topic.c_str(), len, msg.c_str(), 0, false);
         //int rc = mosquitto_publish(mosq, nullptr, topic.c_str(), len, msg.c_str(), 0, false);
 
-                std::cout << "publishing msg: " << static_cast<const char*>(msg) << "of size " << len << std::endl;
-                int rc = mosquitto_publish(mosq, NULL, "test/t1", len, msg, 0, false);
+        std::cout << "publishing msg: " << static_cast<const char*>(msg) << "of size " << len << std::endl;
+        std::cout << "Z1";
+        std::cout << mosq << len << msg;
+        int rc = mosquitto_publish(mosq, NULL, "test/t1", len, msg, 0, false);
+        std::cout << "Z2";
         if (rc != MOSQ_ERR_SUCCESS) {
             std::cerr << "Failed to publish message. Error Code: " << rc << "\n";
         }
