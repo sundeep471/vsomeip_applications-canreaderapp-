@@ -270,8 +270,12 @@ void my_message_handler(const std::shared_ptr<vsomeip_v3::message>& message) {
         std::string msg;
     std::ostringstream oss;  // Create a string stream object
 
-    auto payload = message->get_payload()->get_data();
-
+    //auto payload = message->get_payload()->get_data();
+    if (message->get_payload()) {    
+        auto payload = message->get_payload()->get_data();    //// lets do our further check below for >20  
+    } else {
+        return;
+    }
     // If the payload is long enough
     if (message->get_payload()->get_length() >= 20) {
         // Extracting and printing the CAN ID in the correct order
@@ -284,20 +288,32 @@ void my_message_handler(const std::shared_ptr<vsomeip_v3::message>& message) {
             std::cout << std::setw(2) << std::setfill('0') << static_cast<int>(payload[i]);
             if (i > 8) std::cout << " "; // Leave a space except the last byte
         }
-                std::cout << msg << std::endl;
-                msg = canId.str();
-        msqt_pub.publish(static_cast<const void*>(msg.c_str()), msg.size());
 
-                std::cout << "CAN Data = ";
-                canData << std::hex << std::uppercase << std::setw(2) << std::setfill('0');
+        std::cout << "X1";
+        std::cout << msg << std::endl;
+        std::cout << "X2";
+
+        msg = canId.str();
+        std::cout << "X3";
+        msqt_pub.publish(static_cast<const void*>(msg.c_str()), msg.size());
+        std::cout << "X4";
+
+        std::cout << "CAN Data = ";
+        canData << std::hex << std::uppercase << std::setw(2) << std::setfill('0');
         for (int i = 12; i < 20; ++i) { // CAN Data starts from the 12th byte and is 8 bytes long
-                        canData << std::setw(2) << std::setfill('0') << static_cast<int>(payload[i]);
+            canData << std::setw(2) << std::setfill('0') << static_cast<int>(payload[i]);
             std::cout << std::setw(2) << std::setfill('0') << static_cast<int>(payload[i]);
             if (i < 19) std::cout << " ";
         }
-                std::cout << msg << std::endl;
-                msg = canData.str();
-                msqt_pub.publish(static_cast<const void*>(msg.c_str()), msg.size());
+
+        std::cout << "Y1";
+        std::cout << msg << std::endl;
+        std::cout << "Y2";
+
+        msg = canData.str();
+        std::cout << "Y3";
+        msqt_pub.publish(static_cast<const void*>(msg.c_str()), msg.size());
+        std::cout << "Y4";
 
         std::cout << std::endl;
     } else {
