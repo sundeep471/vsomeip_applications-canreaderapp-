@@ -291,14 +291,13 @@ void my_message_handler(const std::shared_ptr<vsomeip_v3::message>& message) {
             if (i > 8) std::cout << " "; // Leave a space except the last byte
         }
 
-        std::cout << "X1\n";
         std::cout << msg << std::endl;
-        std::cout << "X2\n";
+        std::cout << "X1\n";
 
         msg = canId.str();
-        std::cout << "X3\n";
+        std::cout << "X2\n";
         msqt_pub.publish(static_cast<const void*>(msg.c_str()), msg.size());
-        std::cout << "X4\n";
+        std::cout << "X3\n";
 
         std::cout << "CAN Data = ";
         canData << std::hex << std::uppercase << std::setw(2) << std::setfill('0');
@@ -308,14 +307,13 @@ void my_message_handler(const std::shared_ptr<vsomeip_v3::message>& message) {
             if (i < 19) std::cout << " ";
         }
 
-        std::cout << "Y1\n";
         std::cout << msg << std::endl;
-        std::cout << "Y2\n";
+        std::cout << "Y1\n";
 
         msg = canData.str();
-        std::cout << "Y3\n";
+        std::cout << "Y2\n";
         msqt_pub.publish(static_cast<const void*>(msg.c_str()), msg.size());
-        std::cout << "Y4\n";
+        std::cout << "Y3\n";
 
         std::cout << std::endl;
     
