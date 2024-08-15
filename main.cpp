@@ -276,7 +276,7 @@ void my_message_handler(const std::shared_ptr<vsomeip_v3::message>& message) {
     } else {
         return;
     }
-    try:
+    try {
         
     // If the payload is long enough
     if (message->get_payload()->get_length() >= 20) {
@@ -318,11 +318,12 @@ void my_message_handler(const std::shared_ptr<vsomeip_v3::message>& message) {
         std::cout << "Y4";
 
         std::cout << std::endl;
-    catch (std::exception& e) {
-        std::cerr << "Exception caught : " << e.what() << std::endl;
     }
     } else {
         std::cout << "Not 20 Bytes: " << message->get_payload()->get_length() << payload << std::endl;
+    }
+    catch (std::exception& e) {
+        std::cerr << "Exception caught : " << e.what() << std::endl;
     }
 
     //msqt_pub.publish(canId, "test/t1", 25); //canId.size());
