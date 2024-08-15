@@ -271,13 +271,13 @@ void my_message_handler(const std::shared_ptr<vsomeip_v3::message>& message) {
     std::ostringstream oss;  // Create a string stream object
 
     //auto payload = message->get_payload()->get_data();
-    if (message->get_payload()) {    
-        auto payload = message->get_payload()->get_data();    //// lets do our further check below for >20  
-    } else {
+    auto payload = message->get_payload() ? message->get_payload()->get_data() : nullptr;
+
+    if (!payload) {
         return;
     }
-    try {
-        
+
+    try {        
     // If the payload is long enough
     if (message->get_payload()->get_length() >= 20) {
         // Extracting and printing the CAN ID in the correct order
