@@ -281,6 +281,7 @@ void my_message_handler(const std::shared_ptr<vsomeip_v3::message>& message) {
         if (message->get_payload()->get_length() >= 20) { // If the payload is long enough
             // Extracting and printing the CAN ID in the correct order
             // CAN ID is located in 4 bytes starting from the 12th byte of the payload
+            std::cout << "X0\n";
             std::cout << "CAN ID = ";
             std::cout << std::hex << std::uppercase;
             canId << std::hex << std::uppercase << std::setw(2) << std::setfill('0');
@@ -296,6 +297,7 @@ void my_message_handler(const std::shared_ptr<vsomeip_v3::message>& message) {
             msqt_pub.publish(static_cast<const void*>(msg.c_str()), msg.size());
             std::cout << "X3\n";
 
+            std::cout << "Y0\n";
             std::cout << "CAN Data = ";
             canData << std::hex << std::uppercase << std::setw(2) << std::setfill('0');
             for (int i = 12; i < 20; ++i) { // CAN Data starts from the 12th byte and is 8 bytes long
