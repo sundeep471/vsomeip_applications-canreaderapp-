@@ -7,7 +7,6 @@ public:
         mosq = mosquitto_new("publisher-test", true, nullptr);
         if (mosq == nullptr) {
             std::cerr << "Failed to create mosquitto client instance.\n";
-            // Handle error as appropriate
         }
     }
 
