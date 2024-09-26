@@ -299,7 +299,6 @@ void my_message_handler(const std::shared_ptr<vsomeip_v3::message>& message) {
                     std::cout << "Exiting due to mosquitto broker service not running\n" << std::endl;
                     exit(1);
                 std::cout << "Failed to publish with return code: " << rc << std::endl;
-                continue; // don't proceed to publish CAN Data if CAN ID fails to be published.
             }
             std::cout << "X2\n";
 
