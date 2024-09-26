@@ -301,10 +301,8 @@ void my_message_handler(const std::shared_ptr<vsomeip_v3::message>& message) {
                     exit(1);
                 }
                 std::cout << "Failed to publish with return code: " << rc << std::endl;
-                
             }
             std::cout << "X2\n";
-
             std::cout << "Y0\n";
             std::cout << "CAN Data = ";
             canData << std::hex << std::uppercase << std::setw(2) << std::setfill('0');
