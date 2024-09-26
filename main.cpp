@@ -265,6 +265,7 @@ void my_state_handler(vsomeip_v3::state_type_e ste) {
 }
 
 void my_message_handler(const std::shared_ptr<vsomeip_v3::message>& message) {
+    int rc = 0;
     std::stringstream canId;
     std::stringstream canData;
     std::string msg;
@@ -293,13 +294,14 @@ void my_message_handler(const std::shared_ptr<vsomeip_v3::message>& message) {
             std::cout << std::endl;
             msg = canId.str();
             std::cout << "X1\n";
-            int rc = msqt_pub.publish(static_cast<const void*>(msg.c_str()), msg.size());
+            rc = msqt_pub.publish(static_cast<const void*>(msg.c_str()), msg.size());
             if (0 != rc) {
                 if (255 == rc) {
                     std::cout << "Exiting due to mosquitto broker service not running\n" << std::endl;
                     exit(1);
+                }
                 std::cout << "Failed to publish with return code: " << rc << std::endl;
-                continue; // don't proceed to publish CAN Data if CAN ID fails to be published.
+                
             }
             std::cout << "X2\n";
 
@@ -317,7 +319,7 @@ void my_message_handler(const std::shared_ptr<vsomeip_v3::message>& message) {
             msg = canData.str();
             //std::cout << msg << std::endl;
             std::cout << "Y2\n";            
-            int rc = msqt_pub.publish(static_cast<const void*>(msg.c_str()), msg.size());
+            rc = msqt_pub.publish(static_cast<const void*>(msg.c_str()), msg.size());
             if (0 != rc) {
                 std::cout << "Failed to publish with return code: " << rc << std::endl;
             std::cout << "Y3\n";    
