@@ -1,52 +1,118 @@
 #include <mosquitto.h>
 
-// Function to print the error message based on MQTT return codes
+// Function to print the error message based on Mosquitto return codes
 void print_mqtt_error(int error_code) {
     switch (error_code) {
-        case MQTTASYNC_SUCCESS:
-            std::cout << "Success: Operation completed successfully.\n";
+        case MOSQ_ERR_AUTH_CONTINUE:
+            std::cout << "Mosquitto: Authentication continues.\n";
             break;
-        case MQTTASYNC_FAILURE:
-            std::cout << "Failure: Unspecified error occurred.\n";
+        case MOSQ_ERR_NO_SUBSCRIBERS:
+            std::cout << "Mosquitto: No subscribers to the message.\n";
             break;
-        case MQTTASYNC_PERSISTENCE_ERROR:
-            std::cout << "Persistence Error: Problem with file system persistence.\n";
+        case MOSQ_ERR_SUB_EXISTS:
+            std::cout << "Mosquitto: Subscription already exists.\n";
             break;
-        case MQTTASYNC_DISCONNECTED:
-            std::cout << "Disconnected: Client is disconnected from the broker.\n";
+        case MOSQ_ERR_CONN_PENDING:
+            std::cout << "Mosquitto: Connection is pending.\n";
             break;
-        case MQTTASYNC_BAD_STRUCTURE:
-            std::cout << "Bad Structure: The structure passed was invalid.\n";
+        case MOSQ_ERR_SUCCESS:
+            std::cout << "Mosquitto: Success: Operation completed successfully.\n";
             break;
-        case MQTTASYNC_BAD_UTF8_STRING:
-            std::cout << "Bad UTF-8 String: The topic or payload string was not valid UTF-8.\n";
+        case MOSQ_ERR_NOMEM:
+            std::cout << "Mosquitto: Out of memory when allocating resources.\n";
             break;
-        case MQTTASYNC_NULL_PARAMETER:
-            std::cout << "Null Parameter: A required parameter was passed as null.\n";
+        case MOSQ_ERR_PROTOCOL:
+            std::cout << "Mosquitto: Protocol error detected.\n";
             break;
-        case MQTTASYNC_BAD_QOS:
-            std::cout << "Bad QoS: Invalid Quality of Service level.\n";
+        case MOSQ_ERR_INVAL:
+            std::cout << "Mosquitto: Invalid input parameter.\n";
             break;
-        case MQTTASYNC_NO_MORE_MSGIDS:
-            std::cout << "No More Message IDs: No message IDs available.\n";
+        case MOSQ_ERR_NO_CONN:
+            std::cout << "Mosquitto: No connection to broker.\n";
             break;
-        case MQTTASYNC_OPERATION_INCOMPLETE:
-            std::cout << "Operation Incomplete: Operation has not completed yet.\n";
+        case MOSQ_ERR_CONN_REFUSED:
+            std::cout << "Mosquitto: Connection refused by the broker.\n";
             break;
-        case MQTTASYNC_MAX_BUFFERED_MESSAGES:
-            std::cout << "Max Buffered Messages Reached: Too many buffered messages.\n";
+        case MOSQ_ERR_NOT_FOUND:
+            std::cout << "Mosquitto: Requested topic or message not found.\n";
             break;
-        case MQTTASYNC_SSL_ERROR:
-            std::cout << "SSL Error: A problem occurred with the SSL/TLS connection.\n";
+        case MOSQ_ERR_CONN_LOST:
+            std::cout << "Mosquitto: Connection to the broker was lost.\n";
             break;
-        case MQTTASYNC_BAD_PROTOCOL:
-            std::cout << "Bad Protocol: The requested protocol is not supported.\n";
+        case MOSQ_ERR_TLS:
+            std::cout << "Mosquitto: Problem with SSL/TLS connection.\n";
             break;
-        case MQTTASYNC_BAD_MQTT_VERSION:
-            std::cout << "Bad MQTT Version: The requested MQTT version is not supported.\n";
+        case MOSQ_ERR_PAYLOAD_SIZE:
+            std::cout << "Mosquitto: Payload too large.\n";
+            break;
+        case MOSQ_ERR_NOT_SUPPORTED:
+            std::cout << "Mosquitto: Operation not supported by the broker.\n";
+            break;
+        case MOSQ_ERR_AUTH:
+            std::cout << "Mosquitto: Authentication failed.\n";
+            break;
+        case MOSQ_ERR_ACL_DENIED:
+            std::cout << "Mosquitto: Access control denied the operation.\n";
+            break;
+        case MOSQ_ERR_UNKNOWN:
+            std::cout << "Mosquitto: Unknown error occurred.\n";
+            break;
+        case MOSQ_ERR_ERRNO:
+            std::cout << "Mosquitto: System call error, check `errno` for details.\n";
+            break;
+        case MOSQ_ERR_EAI:
+            std::cout << "Mosquitto: Error in address resolution.\n";
+            break;
+        case MOSQ_ERR_PROXY:
+            std::cout << "Mosquitto: Proxy error.\n";
+            break;
+        case MOSQ_ERR_PLUGIN_DEFER:
+            std::cout << "Mosquitto: Plugin deferred the operation.\n";
+            break;
+        case MOSQ_ERR_MALFORMED_UTF8:
+            std::cout << "Mosquitto: Malformed UTF-8 string detected.\n";
+            break;
+        case MOSQ_ERR_KEEPALIVE:
+            std::cout << "Mosquitto: Keepalive timeout.\n";
+            break;
+        case MOSQ_ERR_LOOKUP:
+            std::cout << "Mosquitto: Error in DNS lookup.\n";
+            break;
+        case MOSQ_ERR_MALFORMED_PACKET:
+            std::cout << "Mosquitto: Malformed MQTT packet.\n";
+            break;
+        case MOSQ_ERR_DUPLICATE_PROPERTY:
+            std::cout << "Mosquitto: Duplicate property in the packet.\n";
+            break;
+        case MOSQ_ERR_TLS_HANDSHAKE:
+            std::cout << "Mosquitto: TLS handshake failed.\n";
+            break;
+        case MOSQ_ERR_QOS_NOT_SUPPORTED:
+            std::cout << "Mosquitto: QoS level not supported by the broker.\n";
+            break;
+        case MOSQ_ERR_OVERSIZE_PACKET:
+            std::cout << "Mosquitto: Packet exceeds maximum allowed size.\n";
+            break;
+        case MOSQ_ERR_OCSP:
+            std::cout << "Mosquitto: OCSP (Online Certificate Status Protocol) check failed.\n";
+            break;
+        case MOSQ_ERR_TIMEOUT:
+            std::cout << "Mosquitto: Timeout occurred.\n";
+            break;
+        case MOSQ_ERR_RETAIN_NOT_SUPPORTED:
+            std::cout << "Mosquitto: Retained messages are not supported.\n";
+            break;
+        case MOSQ_ERR_TOPIC_ALIAS_INVALID:
+            std::cout << "Mosquitto: Invalid topic alias received.\n";
+            break;
+        case MOSQ_ERR_ADMINISTRATIVE_ACTION:
+            std::cout << "Mosquitto: Administrative action is required.\n";
+            break;
+        case MOSQ_ERR_ALREADY_EXISTS:
+            std::cout << "Mosquitto: Resource already exists.\n";
             break;
         default:
-            std::cout << "Unknown Error: Error code " << error_code << ".\n";
+            std::cout << "Mosquitto: Unknown error code " << error_code << ".\n";
             break;
     }
 }
