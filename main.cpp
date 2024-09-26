@@ -320,6 +320,7 @@ void my_message_handler(const std::shared_ptr<vsomeip_v3::message>& message) {
             rc = msqt_pub.publish(static_cast<const void*>(msg.c_str()), msg.size());
             if (0 != rc) {
                 std::cout << "Failed to publish with return code: " << rc << std::endl;
+            }
             std::cout << "Y3\n";    
         } else {
             std::cout << "Not 20 Bytes: " << message->get_payload()->get_length() << payload << std::endl;
