@@ -1,5 +1,56 @@
 #include <mosquitto.h>
 
+// Function to print the error message based on MQTT return codes
+void print_mqtt_error(int error_code) {
+    switch (error_code) {
+        case MQTTASYNC_SUCCESS:
+            std::cout << "Success: Operation completed successfully.\n";
+            break;
+        case MQTTASYNC_FAILURE:
+            std::cout << "Failure: Unspecified error occurred.\n";
+            break;
+        case MQTTASYNC_PERSISTENCE_ERROR:
+            std::cout << "Persistence Error: Problem with file system persistence.\n";
+            break;
+        case MQTTASYNC_DISCONNECTED:
+            std::cout << "Disconnected: Client is disconnected from the broker.\n";
+            break;
+        case MQTTASYNC_BAD_STRUCTURE:
+            std::cout << "Bad Structure: The structure passed was invalid.\n";
+            break;
+        case MQTTASYNC_BAD_UTF8_STRING:
+            std::cout << "Bad UTF-8 String: The topic or payload string was not valid UTF-8.\n";
+            break;
+        case MQTTASYNC_NULL_PARAMETER:
+            std::cout << "Null Parameter: A required parameter was passed as null.\n";
+            break;
+        case MQTTASYNC_BAD_QOS:
+            std::cout << "Bad QoS: Invalid Quality of Service level.\n";
+            break;
+        case MQTTASYNC_NO_MORE_MSGIDS:
+            std::cout << "No More Message IDs: No message IDs available.\n";
+            break;
+        case MQTTASYNC_OPERATION_INCOMPLETE:
+            std::cout << "Operation Incomplete: Operation has not completed yet.\n";
+            break;
+        case MQTTASYNC_MAX_BUFFERED_MESSAGES:
+            std::cout << "Max Buffered Messages Reached: Too many buffered messages.\n";
+            break;
+        case MQTTASYNC_SSL_ERROR:
+            std::cout << "SSL Error: A problem occurred with the SSL/TLS connection.\n";
+            break;
+        case MQTTASYNC_BAD_PROTOCOL:
+            std::cout << "Bad Protocol: The requested protocol is not supported.\n";
+            break;
+        case MQTTASYNC_BAD_MQTT_VERSION:
+            std::cout << "Bad MQTT Version: The requested MQTT version is not supported.\n";
+            break;
+        default:
+            std::cout << "Unknown Error: Error code " << error_code << ".\n";
+            break;
+    }
+}
+
 class mqtt {
 public:
     mqtt() : mosq(nullptr) {
@@ -64,7 +115,8 @@ public:
         int rc = mosquitto_publish(mosq, NULL, "test/t1", len, msg, 0, false);
         std::cout << "Z2";
         if (rc != MOSQ_ERR_SUCCESS) {
-            std::cerr << " Failed to publish message. Error Code: " << rc << "\n";
+            print_mqtt_error(rc);
+            //std::cerr << " Failed to publish message. Error Code: " << rc << "\n";
         }
         return rc;
     }
