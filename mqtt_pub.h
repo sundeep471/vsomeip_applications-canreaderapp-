@@ -1,4 +1,12 @@
 #include <mosquitto.h>
+#include <cstring>
+
+// Function to print the error message based on system error (errno)
+void handle_errno() {
+    char buf[1024];  // Buffer to hold the error message
+    strerror_r(errno, buf, sizeof(buf));  // Get the error message for current errno
+    std::cout << "System Error: " << buf << " (errno: " << errno << ")\n";
+}
 
 // Function to print the error message based on Mosquitto return codes
 void print_mqtt_error(int error_code) {
@@ -58,7 +66,7 @@ void print_mqtt_error(int error_code) {
             std::cout << "Mosquitto: Unknown error occurred.\n";
             break;
         case MOSQ_ERR_ERRNO:
-            std::cout << "Mosquitto: System call error, check `errno` for details.\n";
+            handle_errno();
             break;
         case MOSQ_ERR_EAI:
             std::cout << "Mosquitto: Error in address resolution.\n";
