@@ -2008,13 +2008,13 @@ void my_async_subscription_handler_sec(vsomeip_v3::client_t client, const vsomei
 
 int main() {
     std::cout << "Creating application ..." << std::endl;
-    
+    /*
     std::string idstring = "0x8CF00400";
     ara::core::Vector<uint8_t> vvar {0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF}; // Example for EEC4_00
     ara::core::Span<const uint8_t> payload1 {vvar.data(), vvar.size()};
     extract_signals(idstring, payload1);
     exit(1);
-    
+    */
     app = vsomeip::runtime::get()->create_application("Client1");
 
     std::cout << "Initializing application..." << std::endl;
