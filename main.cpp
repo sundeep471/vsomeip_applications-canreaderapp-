@@ -279,7 +279,7 @@ void processCanMessage(std::string &canId,  ara::core::Span<const uint8_t> &canD
     std::cout << "K01" << std::endl;
     std::cout << "Args: canId: " << std::hex << canId << std::endl;
     std::cout << "Args: canData: " << std::hex << canData[0] << canData[1] << canData[2] << canData[3] << canData[4] << canData[5] << canData[6] << std::endl;
-    switch (std::stoul(canId, nullptr, 16)) {
+    switch (std::stoul(canId, nullptr, 16) | 0x80000000) {
         #if 0
         case 0x98FEE617: {
             constexpr auto message = canID_0x98FEE617{};
