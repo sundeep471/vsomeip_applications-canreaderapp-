@@ -1900,7 +1900,7 @@ void my_message_handler(const std::shared_ptr<vsomeip_v3::message>& message) {
             //msqt_pub.publish(static_cast<const void*>(canData_msg.c_str()), canData_msg.size());
             extract_signals(canId_msg, canDataSpan);
         } else {
-            std::cout << "Not 20 Bytes: " << message->get_payload()->get_length() << payload << std::endl;
+            std::cout << "Not 20 Bytes: len(" << message->get_payload()->get_length() << ") payload(" << payload << ")" << std::endl;
         }
     } catch (std::exception& e) {
         std::cerr << "Exception caught : " << e.what() << std::endl;
