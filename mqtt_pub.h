@@ -60,10 +60,11 @@ public:
         //int rc = mosquitto_publish(mosq, nullptr, topic.c_str(), len, msg.c_str(), 0, false);
 
         std::cout << "publishing msg: " << static_cast<const char*>(msg) << " of size " << len << std::endl;
-        std::cout << "Z1";
-        std::cout << mosq << ' ' << 'len=' << len << 'msg=' << msg;
+        std::cout << "Z1\n";
+        std::cout << mosq << ': ' << 'len=' << len << std::endl
+        std::cout << mosq << ': ' << 'msg=' << msg << std::endl;
         int rc = mosquitto_publish(mosq, NULL, "test/t1", len, msg, 0, false);
-        std::cout << "Z2";
+        std::cout << "Z2\n";
         if (rc != MOSQ_ERR_SUCCESS) {
             std::cerr << "\nFailed to publish message. Error Code: " << rc << "\n";
         }
