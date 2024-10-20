@@ -61,7 +61,7 @@ public:
 
         std::cout << "publishing msg: " << static_cast<const char*>(msg) << " of size " << len << std::endl;
         std::cout << "Z1\n";
-        std::cout << mosq << ': ' << 'len=' << len << std::endl
+        std::cout << mosq << ': ' << 'len=' << len << std::endl;
         std::cout << mosq << ': ' << 'msg=' << msg << std::endl;
         int rc = mosquitto_publish(mosq, NULL, "test/t1", len, msg, 0, false);
         std::cout << "Z2\n";
