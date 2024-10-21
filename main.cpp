@@ -280,6 +280,7 @@ void processCanMessage(std::string &canId,  ara::core::Span<const uint8_t> &canD
     std::cout << "Args: canId: " << std::hex << canId << std::endl;
     std::cout << "Args: (canId | 0x80000000): " << std::hex << (std::stoul(canId, nullptr, 16) | 0x80000000) << std::endl;
     std::cout << "Args: canData: " << std::hex << canData[0] << canData[1] << canData[2] << canData[3] << canData[4] << canData[5] << canData[6] << std::endl;
+    #if 0
     switch (std::stoul(canId, nullptr, 16) | 0x80000000) {
         case 0x98FEE617: {
             constexpr auto message = canID_0x98FEE617{};
@@ -1843,13 +1844,14 @@ void processCanMessage(std::string &canId,  ara::core::Span<const uint8_t> &canD
             std::cout << "Unknown CAN ID: " << std::hex << canId << std::endl;
             break;
     }
+    #endif
 }
 
 // Extract and publish individual signals as per dbc definition.
 void extract_signals(std::string &canId, ara::core::Span<const uint8_t> &canData)
 {
-   //std::cout << canId << "\n";
-   //std::cout << canData[0] << "\n";
+   //std::cout << "CAN ID: " << std::hex << canId << "\n";
+   //std::cout << "CAN DATA: " << canData[0] << "\n";
    processCanMessage(canId, canData);
    return;
 }
@@ -1883,7 +1885,7 @@ void my_message_handler(const std::shared_ptr<vsomeip_v3::message>& message) {
             }
             std::cout << std::endl;
             std::string canId_msg = canId.str();
-            msqt_pub.publish(static_cast<const void*>(canId_msg.c_str()), canId_msg.size());
+            //msqt_pub.publish(static_cast<const void*>(canId_msg.c_str()), canId_msg.size());
 
             //std::cout << "CAN Data = ";
             //canData << std::hex << std::uppercase << std::setw(2) << std::setfill('0');
@@ -1898,9 +1900,10 @@ void my_message_handler(const std::shared_ptr<vsomeip_v3::message>& message) {
             //std::cout << std::endl;
             //std::string canData_msg = canData.str();
             //msqt_pub.publish(static_cast<const void*>(canData_msg.c_str()), canData_msg.size());
-            extract_signals(canId_msg, canDataSpan);
+            //extract_signals(canId_msg, canDataSpan);
         } else {
-            std::cout << "Not 20 Bytes: len(" << message->get_payload()->get_length() << ") payload(" << payload << ")" << std::endl;
+            ;
+            //std::cout << "Not 20 Bytes: len(" << message->get_payload()->get_length() << ") payload(" << payload << ")" << std::endl;
         }
     } catch (std::exception& e) {
         std::cerr << "Exception caught : " << e.what() << std::endl;
