@@ -1929,6 +1929,8 @@ void my_message_handler(const std::shared_ptr<vsomeip_v3::message>& message) {
                 case 0xC3B90000:
                     std::cout << "(" << std::hex << CAN_int_value << ")" << std::endl;
                 break;
+                default:
+                    extract_signals(canId_msg, canDataSpan);
             }
         } else {
             ;
