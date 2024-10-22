@@ -1902,8 +1902,9 @@ void my_message_handler(const std::shared_ptr<vsomeip_v3::message>& message) {
             //msqt_pub.publish(static_cast<const void*>(canData_msg.c_str()), canData_msg.size());
             //extract_signals(canId_msg, canDataSpan);
 
-            // Known CM4 generated signals 
-            switch (std::stoul(canId, nullptr, 16)) {
+            // Known CM4 generated signals
+            unsigned long CAN_int_value = std::stoul(canId, nullptr, 16);
+            switch (CAN_int_value) {
                 case 0xC3AB8000:
                 case 0xC3AC0000:
                 case 0xC3AC8000:
@@ -1926,7 +1927,7 @@ void my_message_handler(const std::shared_ptr<vsomeip_v3::message>& message) {
                 case 0xC3B60000:
                 case 0xC3B78000:
                 case 0xC3B90000:
-                std::cout << "Ignore : " << value << std::endl;
+                std::cout << "Ignore : " << CAN_int_value << std::endl;
                 break;
             }
             
