@@ -1927,10 +1927,9 @@ void my_message_handler(const std::shared_ptr<vsomeip_v3::message>& message) {
                 case 0xC3B60000:
                 case 0xC3B78000:
                 case 0xC3B90000:
-                std::cout << "Ignore : " << std::hex << CAN_int_value << std::endl;
+                    std::cout << "(" << std::hex << CAN_int_value << ")" << std::endl;
                 break;
             }
-            
         } else {
             ;
             //std::cout << "Not 20 Bytes: len(" << message->get_payload()->get_length() << ") payload(" << payload << ")" << std::endl;
