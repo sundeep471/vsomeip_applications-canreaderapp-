@@ -1875,15 +1875,15 @@ void my_message_handler(const std::shared_ptr<vsomeip_v3::message>& message) {
         if (message->get_payload()->get_length() >= 20) { // If the payload is long enough
             // Extracting and printing the CAN ID in the correct order
             // CAN ID is located in 4 bytes starting from the 12th byte of the payload
-            std::cout << "CAN ID = ";
-            std::cout << std::hex << std::uppercase;
+            //std::cout << "CAN ID = ";
+            //std::cout << std::hex << std::uppercase;
             canId << std::hex << std::uppercase << std::setw(2) << std::setfill('0');
             for (int i = 11; i >= 8; --i) {
                 canId << std::setw(2) << std::setfill('0') << static_cast<int>(payload[i]);
-                std::cout << std::setw(2) << std::setfill('0') << static_cast<int>(payload[i]);
+                //std::cout << std::setw(2) << std::setfill('0') << static_cast<int>(payload[i]);
                 if (i > 8) std::cout << " "; // Leave a space except for the last byte
             }
-            std::cout << std::endl;
+            //std::cout << std::endl;
             std::string canId_msg = canId.str();
             //msqt_pub.publish(static_cast<const void*>(canId_msg.c_str()), canId_msg.size());
 
@@ -1901,6 +1901,35 @@ void my_message_handler(const std::shared_ptr<vsomeip_v3::message>& message) {
             //std::string canData_msg = canData.str();
             //msqt_pub.publish(static_cast<const void*>(canData_msg.c_str()), canData_msg.size());
             //extract_signals(canId_msg, canDataSpan);
+
+            // Known CM4 generated signals 
+            switch (std::stoul(canId, nullptr, 16)) {
+                case 0xC3AB8000:
+                case 0xC3AC0000:
+                case 0xC3AC8000:
+                case 0xC3AD0000:
+                case 0xC3AD8000:
+                case 0xC3AE0000:
+                case 0xC3AE8000:
+                case 0xC3AF0000:
+                case 0xC3AF8000:
+                case 0xC3B00000:
+                case 0xC3B08000:
+                case 0xC3B10000:
+                case 0xC3B18000:
+                case 0xC3B20000:
+                case 0xC3B28000:
+                case 0xC3B30000:
+                case 0xC3B38000:
+                case 0xC3B40000:
+                case 0xC3B48000:
+                case 0xC3B60000:
+                case 0xC3B78000:
+                case 0xC3B90000:
+                std::cout << "Ignore : " << value << std::endl;
+                break;
+            }
+            
         } else {
             ;
             //std::cout << "Not 20 Bytes: len(" << message->get_payload()->get_length() << ") payload(" << payload << ")" << std::endl;
