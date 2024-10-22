@@ -1903,7 +1903,7 @@ void my_message_handler(const std::shared_ptr<vsomeip_v3::message>& message) {
             //extract_signals(canId_msg, canDataSpan);
 
             // Known CM4 generated signals
-            unsigned long CAN_int_value = std::stoul(canId_str, nullptr, 16);
+            unsigned long CAN_int_value = std::stoul(canId_msg, nullptr, 16);
             switch (CAN_int_value) {
                 case 0xC3AB8000:
                 case 0xC3AC0000:
