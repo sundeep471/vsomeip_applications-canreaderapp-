@@ -275,11 +275,10 @@ void my_state_handler(vsomeip_v3::state_type_e ste) {
 void processCanMessage(std::string &canId,  ara::core::Span<const uint8_t> &canData) {
     //std::cout << canId << "\n";
     //std::cout << canData[0] << "\n";
-
-    std::cout << "K01" << std::endl;
+    //std::cout << "K01" << std::endl;
     std::cout << "Args: canId: " << std::hex << canId << std::endl;
-    std::cout << "Args: (canId | 0x80000000): " << std::hex << (std::stoul(canId, nullptr, 16) | 0x80000000) << std::endl;
-    std::cout << "Args: canData: " << std::hex << canData[0] << canData[1] << canData[2] << canData[3] << canData[4] << canData[5] << canData[6] << std::endl;
+    std::cout << "Args: (canId & 0x7FFFFFFF): " << std::hex << (std::stoul(canId, nullptr, 16) & 0x7FFFFFFF) << std::endl;
+    std::cout << "Args: canData start byte: " << std::hex << canData[0] << canData[1] << canData[2] << canData[3] << canData[4] << canData[5] << canData[6] << "End byte" << std::endl;
     #if 0
     switch (std::stoul(canId, nullptr, 16) | 0x80000000) {
         case 0x98FEE617: {
@@ -1905,6 +1904,7 @@ void my_message_handler(const std::shared_ptr<vsomeip_v3::message>& message) {
             // Known CM4 generated signals
             unsigned long CAN_int_value = std::stoul(canId_msg, nullptr, 16);
             switch (CAN_int_value) {
+                //Old QNX Version
                 case 0xC3AB8000:
                 case 0xC3AC0000:
                 case 0xC3AC8000:
@@ -1927,7 +1927,28 @@ void my_message_handler(const std::shared_ptr<vsomeip_v3::message>& message) {
                 case 0xC3B60000:
                 case 0xC3B78000:
                 case 0xC3B90000:
-                    std::cout << "(" << std::hex << CAN_int_value << ")" << std::endl;
+
+                //New QNX version
+                case 0xC2B40000:
+                case 0xC2B60000:
+                case 0xC2B80000:
+                case 0xC2BA0000:
+                case 0xC2BC0000:
+                case 0xC2BE0000:
+                case 0xC2C00000:
+                case 0xC2C20000:
+                case 0xC2C40000:
+                case 0xC2C60000:
+                case 0xC2C80000:
+                case 0xC2CA0000:
+                case 0xC2CC0000:
+                case 0xC2CE0000:
+                case 0xC2D00000:
+                case 0xC2D20000:
+                case 0xC2D40000:
+                case 0xC2D60000:
+                case 0xC2D80000:
+                std::cout << "(" << std::hex << CAN_int_value << ")" << std::endl;
                 break;
                 default:
                     extract_signals(canId_msg, canDataSpan);
