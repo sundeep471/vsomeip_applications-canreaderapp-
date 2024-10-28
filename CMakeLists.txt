@@ -4,7 +4,7 @@
 cmake_minimum_required(VERSION 3.0)
 
 # Project name
-project(data translation_example)
+project(data_translation_example)
 
 # Source file
 set(SRC main.cpp)
