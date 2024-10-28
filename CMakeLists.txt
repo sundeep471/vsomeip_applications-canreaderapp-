@@ -29,4 +29,4 @@ target_link_libraries(cumns_responder
     pthread
 )
 
-install(TARGETS vsomeipClient DESTINATION bin)
+install(TARGETS cumns_responder DESTINATION bin)
