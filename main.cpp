@@ -1,20 +1,19 @@
 #include <iostream>
 #include <string>
 #include <vector>
-#include <cstring>
-#include <mqtt/async_client.h>
+#include <mosquitto.h>
 #include <nlohmann/json.hpp>
 
 using json = nlohmann::json;
 
 // MQTT parameters
-const std::string SERVER_ADDRESS = "tcp://localhost:1883";
-const std::string CLIENT_ID = "MQTTTranslatorClient";
-const std::string CLIENT_ID_PUBLISHER = "MQTTPublisherClient";
-const std::string TOPIC_PUBLISH = "diagstack/request/opencommchannel";
-const std::string TOPIC_SUBSCRIBE = "diagstack/response/opencommchannel";
-const std::string TOPIC_READ_PGN_REQUEST = "diagstack/request/readpgns";
-const std::string TOPIC_READ_PGN_RESPONSE = "diagstack/response/readpgns";
+const char* SERVER_ADDRESS = "localhost";
+const int SERVER_PORT = 1883;
+const char* CLIENT_ID = "MQTTTranslatorClient";
+const char* TOPIC_PUBLISH = "diagstack/request/opencommchannel";
+const char* TOPIC_SUBSCRIBE = "diagstack/response/opencommchannel";
+const char* TOPIC_READ_PGN_REQUEST = "diagstack/request/readpgns";
+const char* TOPIC_READ_PGN_RESPONSE = "diagstack/response/readpgns";
 
 // Supported PGNs
 const std::vector<std::string> SUPPORTED_PGNS = {
@@ -23,9 +22,20 @@ const std::vector<std::string> SUPPORTED_PGNS = {
 
 class Translator {
 public:
-    Translator() : client(SERVER_ADDRESS, CLIENT_ID) {
-        client.set_callback(*this);
-        connect();
+    Translator() {
+        mosquitto_lib_init();
+        mosq = mosquitto_new(CLIENT_ID, true, nullptr);
+        mosquitto_connect(mosq, SERVER_ADDRESS, SERVER_PORT, 60);
+        mosquitto_subscribe(mosq, nullptr, TOPIC_READ_PGN_REQUEST, 0);
+        mosquitto_subscribe(mosq, nullptr, TOPIC_SUBSCRIBE, 0); // Subscribe to the added topic
+
+        // Set up the callback for receiving messages
+        mosquitto_message_callback_set(mosq, messageCallback);
+    }
+
+    ~Translator() {
+        mosquitto_destroy(mosq);
+        mosquitto_lib_cleanup();
     }
 
     void publishOpenCommChannel() {
@@ -41,95 +51,69 @@ public:
             {"resourceName", "CANTP_UDS_on_CAN"}
         };
 
-        mqtt::message_ptr pubmsg = mqtt::make_message(TOPIC_PUBLISH, payload.dump());
-        client.publish(pubmsg);
+        mosquitto_publish(mosq, nullptr, TOPIC_PUBLISH, payload.dump().size(), payload.dump().c_str(), 0, false);
     }
 
-    void subscribe() {
-        client.subscribe(TOPIC_PUBLISH, 1);
-        client.subscribe(TOPIC_READ_PGN_REQUEST, 1);
-    }
-
-    void on_message(const mqtt::const_message_ptr& msg) override {
-        if (msg->get_topic() == TOPIC_PUBLISH) {
-            handleOpenCommChannel(msg->to_string());
-        } else if (msg->get_topic() == TOPIC_READ_PGN_REQUEST) {
-            handleReadPGNs(msg->to_string());
+    void loop() {
+        // Keep processing messages
+        while (true) {
+            mosquitto_loop(mosq, -1, 1);
         }
     }
 
 private:
-    mqtt::async_client client;
+    struct mosquitto* mosq;
 
-    void connect() {
-        try {
-            client.connect()->wait();
-            std::cout << "Connected to MQTT broker!" << std::endl;
-            subscribe();
-        } catch (const mqtt::exception& exc) {
-            std::cerr << "Error connecting: " << exc.what() << std::endl;
-        }
-    }
+    static void messageCallback(struct mosquitto* mosq, void* userdata, const struct mosquitto_message* message) {
+        if (message->topic == std::string(TOPIC_READ_PGN_REQUEST)) {
+            std::cout << "Received READ PGNs request: " << static_cast<char*>(message->payload) << std::endl;
 
-    void handleOpenCommChannel(const std::string& payload) {
-        // Handle the open communication channel request
-        std::cout << "Received OPEN COMM CHANNEL request: " << payload << std::endl;
+            // Handle the request
+            json request = json::parse(static_cast<char*>(message->payload));
+            std::string connectionID = request["connectionID"];
+            std::string sequenceNo = request["sequenceNo"];
+            auto pgnNo = request["pgnNo"];
 
-        // Respond to the request
-        json response = {
-            {"appID", "data_sampler"},
-            {"connectionID", "0x95400f60"},
-            {"sequenceNo", "1"},
-            {"responseCode", "0"}
-        };
+            // Create a response
+            json response = {
+                {"appID", "data_sampler"},
+                {"connectionID", connectionID},
+                {"sequenceNo", sequenceNo},
+                {"data", json::array()},
+                {"responseCode", "0"}
+            };
 
-        mqtt::message_ptr pubmsg = mqtt::make_message(TOPIC_SUBSCRIBE, response.dump());
-        client.publish(pubmsg);
-    }
+            // Limit PGNs to supported ones
+            for (const auto& pgn : pgnNo) {
+                if (std::find(SUPPORTED_PGNS.begin(), SUPPORTED_PGNS.end(), pgn) != SUPPORTED_PGNS.end()) {
+                    json spnArray = json::array(); // Create a new JSON array for SPNs
+                    // Here, you would populate spnArray with SPN values if needed.
 
-    void handleReadPGNs(const std::string& payload) {
-        // Handle read PGNs request
-        json request = json::parse(payload);
-        std::string connectionID = request["connectionID"];
-        std::string sequenceNo = request["sequenceNo"];
-        auto pgnNo = request["pgnNo"];
+                    // Create a new JSON object for the PGN data
+                    json pgnData = {
+                        {"decoded", true},
+                        {"pgnNo", pgn},
+                        {"rawData", std::string("SampleDataFor_") + pgn.get<std::string>()},
+                        {"spn", spnArray}
+                    };
 
-        // Create a response
-        json response = {
-            {"appID", "data_sampler"},
-            {"connectionID", connectionID},
-            {"sequenceNo", sequenceNo},
-            {"data", json::array()},
-            {"responseCode", "0"}
-        };
-
-        // Limit PGNs to supported ones
-        for (const auto& pgn : pgnNo) {
-            if (std::find(SUPPORTED_PGNS.begin(), SUPPORTED_PGNS.end(), pgn) != SUPPORTED_PGNS.end()) {
-                response["data"].push_back({
-                    {"decoded", true},
-                    {"pgnNo", pgn},
-                    {"rawData", "SampleDataFor_" + pgn},
-                    {"spn", json::array()}
-                });
+                    response["data"].push_back(pgnData); // Push the PGN data object to the response
+                }
             }
-        }
 
-        mqtt::message_ptr pubmsg = mqtt::make_message(TOPIC_READ_PGN_RESPONSE, response.dump());
-        client.publish(pubmsg);
+            mosquitto_publish(mosq, nullptr, TOPIC_READ_PGN_RESPONSE, response.dump().size(), response.dump().c_str(), 0, false);
+        }
     }
 };
 
 int main() {
     Translator translator;
 
-    // Publishing an open communication channel request
+    // Example of publishing an open communication channel request
     translator.publishOpenCommChannel();
 
-    // Keep the application running to listen for messages
-    while (true) {
-        translator.client.yield();
-    }
+    // Start the message loop
+    translator.loop();
 
     return 0;
 }
