@@ -10,7 +10,7 @@ project(vsomeip_example)
 set(SRC main.cpp)
 
 # Define the vsomeipClient target
-add_executable(cumns_respondervsomeipClient ${SRC})
+add_executable(cumns_responder ${SRC})
 
 # Find vsomeip3 libraries
 find_library(VSOMEIP3_LIBRARY vsomeip3)
