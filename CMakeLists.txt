@@ -10,7 +10,7 @@ project(vsomeip_example)
 set(SRC main.cpp)
 
 # Define the vsomeipClient target
-add_executable(vsomeipClient ${SRC})
+add_executable(cumns_respondervsomeipClient ${SRC})
 
 # Find vsomeip3 libraries
 find_library(VSOMEIP3_LIBRARY vsomeip3)
@@ -20,7 +20,7 @@ find_library(VSOMEIP3_E2E_LIBRARY vsomeip3-e2e)
 find_library(MOSQUITTO_LIBRARY mosquitto)
 
 # Link libraries
-target_link_libraries(vsomeipClient
+target_link_libraries(cumns_responder
     ${VSOMEIP3_LIBRARY}
     ${VSOMEIP3_CFG_LIBRARY}
     ${VSOMEIP3_SD_LIBRARY}
