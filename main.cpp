@@ -10,8 +10,8 @@ using json = nlohmann::json;
 const char* SERVER_ADDRESS = "localhost";
 const int SERVER_PORT = 1883;
 const char* CLIENT_ID = "MQTTTranslatorClient";
-const char* TOPIC_PUBLISH = "diagstack/request/opencommchannel";
-const char* TOPIC_SUBSCRIBE = "diagstack/response/opencommchannel";
+const char* TOPIC_REQUEST_COMM = "diagstack/request/opencommchannel";
+const char* TOPIC_RESPONSE_COMM = "diagstack/response/opencommchannel";
 const char* TOPIC_READ_PGN_REQUEST = "diagstack/request/readpgns";
 const char* TOPIC_READ_PGN_RESPONSE = "diagstack/response/readpgns";
 
@@ -29,9 +29,9 @@ public:
             std::cerr << "Failed to connect to MQTT broker" << std::endl;
             // Handle connection failure
         }
-        mosquitto_subscribe(mosq, nullptr, TOPIC_SUBSCRIBE, 0); // Subscribe to the added topic
+        mosquitto_subscribe(mosq, nullptr, TOPIC_REQUEST_COMM, 0); // Subscribe to the added topic
         // Example of publishing an open communication channel request
-        publishOpenCommChannel();
+        publishOpenCommChannelResponse();
         mosquitto_subscribe(mosq, nullptr, TOPIC_READ_PGN_REQUEST, 0);
 
         // Set up the callback for receiving messages
@@ -43,7 +43,7 @@ public:
         mosquitto_lib_cleanup();
     }
 
-    void publishOpenCommChannel() {
+    void publishOpenCommChannelResponse() {
         json payload = {
             {"appID", "data_sampler"},
             {"sequenceNo", "2"},
@@ -56,7 +56,8 @@ public:
             {"resourceName", "CANTP_UDS_on_CAN"}
         };
 
-        mosquitto_publish(mosq, nullptr, TOPIC_PUBLISH, payload.dump().size(), payload.dump().c_str(), 0, false);
+        std::cout << "Publishing Comm Response to the requestor" << std::endl;
+        mosquitto_publish(mosq, nullptr, TOPIC_RESPONSE_COMM, payload.dump().size(), payload.dump().c_str(), 0, false);
     }
 
     void loop() {
@@ -115,7 +116,31 @@ private:
 
             // Publish the response
             mosquitto_publish(mosq, nullptr, TOPIC_READ_PGN_RESPONSE, response.dump().size(), response.dump().c_str(), 0, false);
-        }
+        } else if (message->topic == std::string(TOPIC_REQUEST_COMM)) {
+            std::cout << "Received Open Comm Channel request: " << static_cast<char*>(message->payload) << std::endl;
+
+            // Parse the request JSON
+            json request = json::parse(static_cast<char*>(message->payload));
+
+            // Extract relevant information from the request (e.g., appID, sequenceNo, toolAddress, ecuAddress, etc.)
+            std::string appID = request["appID"];
+            std::string sequenceNo = request["sequenceNo"];
+            // ... (extract other fields as needed)
+
+            // Process the request (e.g., open a communication channel, initialize resources, etc.)
+
+            // Send a response to the client
+            json response = {
+                {"appID", appID},
+                {"sequenceNo", sequenceNo},
+                {"connectionID", "your_connection_id"},
+                {"responseCode", "0"} // Or other appropriate response code
+            };
+
+            std::cout << "Publishing Comm Response to the requestor" << std::endl;
+            mosquitto_publish(mosq, nullptr, TOPIC_RESPONSE_COMM, response.dump().size(), response.dump().c_str(), 0, false);
+    }
+
     }
 };
 
