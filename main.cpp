@@ -1,3 +1,4 @@
+
 #include <iostream>
 #include <string>
 #include <vector>
@@ -26,16 +27,17 @@ public:
         mosquitto_lib_init();
         mosq = mosquitto_new(CLIENT_ID, true, nullptr);
         if (mosquitto_connect(mosq, SERVER_ADDRESS, SERVER_PORT, 60) != 0) {
-            // Handle connection failure
             std::cerr << "Failed to connect to MQTT broker" << std::endl;
             std::cerr << "Start the Mosquitto/MQTT broker and restart the process" << std::endl;
             exit(1);
         }
+
+        std::cout << "Subscribing for " << TOPIC_REQUEST_COMM << std::endl;
         mosquitto_subscribe(mosq, nullptr, TOPIC_REQUEST_COMM, 0); // Subscribe to the added topic
         // Example of publishing an open communication channel request
-        //publishOpenCommChannelResponse();
-        //mosquitto_subscribe(mosq, nullptr, TOPIC_READ_PGN_REQUEST, 0);
+        publishOpenCommChannelResponse();
 
+        mosquitto_subscribe(mosq, nullptr, TOPIC_READ_PGN_REQUEST, 0);
         // Set up the callback for receiving messages
         mosquitto_message_callback_set(mosq, messageCallback);
     }
@@ -48,14 +50,9 @@ public:
     void publishOpenCommChannelResponse() {
         json payload = {
             {"appID", "data_sampler"},
-            {"sequenceNo", "2"},
-            {"toolAddress", "0x18DAFB00"},
-            {"ecuAddress", "0x18DA00FB"},
-            {"canFormat", {
-                {"canPhysReqFormat", "0x07"},
-                {"canRespUSDTFormat", "0x07"}
-            }},
-            {"resourceName", "CANTP_UDS_on_CAN"}
+            {"connectionID", "0x95400f60"},
+            {"sequenceNo", "1"},
+            {"responseCode", "0"},
         };
 
         std::cout << "Publishing Comm Response to the requestor" << std::endl;
@@ -126,17 +123,12 @@ private:
             json request = json::parse(static_cast<char*>(message->payload));
 
             // Extract relevant information from the request (e.g., appID, sequenceNo, toolAddress, ecuAddress, etc.)
-            std::string appID = request["appID"];
-            std::string sequenceNo = request["sequenceNo"];
-            // ... (extract other fields as needed)
-
             // Process the request (e.g., open a communication channel, initialize resources, etc.)
-
             // Send a response to the client
             json response = {
                 {"appID", request["appID"]},
                 {"connectionID", "your_connection_id"},
-                {"sequenceNo", sequenceNo},
+                {"sequenceNo", request["sequenceNo"]},
                 {"responseCode", "0"} // Or other appropriate response code
             };
 
