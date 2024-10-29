@@ -29,8 +29,10 @@ public:
             std::cerr << "Failed to connect to MQTT broker" << std::endl;
             // Handle connection failure
         }
-        mosquitto_subscribe(mosq, nullptr, TOPIC_READ_PGN_REQUEST, 0);
         mosquitto_subscribe(mosq, nullptr, TOPIC_SUBSCRIBE, 0); // Subscribe to the added topic
+        // Example of publishing an open communication channel request
+        publishOpenCommChannel();
+        mosquitto_subscribe(mosq, nullptr, TOPIC_READ_PGN_REQUEST, 0);
 
         // Set up the callback for receiving messages
         mosquitto_message_callback_set(mosq, messageCallback);
@@ -119,9 +121,6 @@ private:
 
 int main() {
     Translator translator;
-
-    // Example of publishing an open communication channel request
-    translator.publishOpenCommChannel();
 
     // Start the message loop
     translator.loop();
