@@ -25,7 +25,10 @@ public:
     Translator() {
         mosquitto_lib_init();
         mosq = mosquitto_new(CLIENT_ID, true, nullptr);
-        mosquitto_connect(mosq, SERVER_ADDRESS, SERVER_PORT, 60);
+        if (mosquitto_connect(mosq, SERVER_ADDRESS, SERVER_PORT, 60) != 0) {
+            std::cerr << "Failed to connect to MQTT broker" << std::endl;
+            // Handle connection failure
+        }
         mosquitto_subscribe(mosq, nullptr, TOPIC_READ_PGN_REQUEST, 0);
         mosquitto_subscribe(mosq, nullptr, TOPIC_SUBSCRIBE, 0); // Subscribe to the added topic
 
@@ -74,6 +77,8 @@ private:
             std::string sequenceNo = request["sequenceNo"];
             auto pgnNo = request["pgnNo"];
 
+            std::cout << "Received PGNs: " << pgnNo << std::endl;
+
             // Create a response
             json response = {
                 {"appID", "data_sampler"},
@@ -86,6 +91,8 @@ private:
             // Limit PGNs to supported ones
             for (const auto& pgn : pgnNo) {
                 if (std::find(SUPPORTED_PGNS.begin(), SUPPORTED_PGNS.end(), pgn) != SUPPORTED_PGNS.end()) {
+                    std::cout << "PGN " << pgn << " is supported" << std::endl;
+
                     json spnArray = json::array(); // Create a new JSON array for SPNs
                     // Here, you would populate spnArray with SPN values if needed.
 
@@ -97,10 +104,14 @@ private:
                         {"spn", spnArray}
                     };
 
-                    response["data"].push_back(pgnData); // Push the PGN data object to the response
+                    // Push the PGN data object to the response
+                    response["data"].push_back(pgnData);
+                } else {
+                    std::cout << "PGN " << pgn << " is not supported" << std::endl;
                 }
             }
 
+            // Publish the response
             mosquitto_publish(mosq, nullptr, TOPIC_READ_PGN_RESPONSE, response.dump().size(), response.dump().c_str(), 0, false);
         }
     }
