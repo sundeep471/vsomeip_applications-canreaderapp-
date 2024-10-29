@@ -9,7 +9,7 @@ using json = nlohmann::json;
 // MQTT parameters
 const char* SERVER_ADDRESS = "localhost";
 const int SERVER_PORT = 1883;
-const char* CLIENT_ID = "MQTTTranslatorClient";
+const char* CLIENT_ID = "NaviMQTTTranslatorClient";
 const char* TOPIC_REQUEST_COMM = "diagstack/request/opencommchannel";
 const char* TOPIC_RESPONSE_COMM = "diagstack/response/opencommchannel";
 const char* TOPIC_READ_PGN_REQUEST = "diagstack/request/readpgns";
@@ -26,13 +26,15 @@ public:
         mosquitto_lib_init();
         mosq = mosquitto_new(CLIENT_ID, true, nullptr);
         if (mosquitto_connect(mosq, SERVER_ADDRESS, SERVER_PORT, 60) != 0) {
-            std::cerr << "Failed to connect to MQTT broker" << std::endl;
             // Handle connection failure
+            std::cerr << "Failed to connect to MQTT broker" << std::endl;
+            std::cerr << "Start the Mosquitto/MQTT broker and restart the process" << std::endl;
+            exit(1);
         }
         mosquitto_subscribe(mosq, nullptr, TOPIC_REQUEST_COMM, 0); // Subscribe to the added topic
         // Example of publishing an open communication channel request
-        publishOpenCommChannelResponse();
-        mosquitto_subscribe(mosq, nullptr, TOPIC_READ_PGN_REQUEST, 0);
+        //publishOpenCommChannelResponse();
+        //mosquitto_subscribe(mosq, nullptr, TOPIC_READ_PGN_REQUEST, 0);
 
         // Set up the callback for receiving messages
         mosquitto_message_callback_set(mosq, messageCallback);
@@ -80,7 +82,7 @@ private:
             std::string sequenceNo = request["sequenceNo"];
             auto pgnNo = request["pgnNo"];
 
-            std::cout << "Received PGNs: " << pgnNo << std::endl;
+            std::cout << "Received PGNs are: " << pgnNo << std::endl;
 
             // Create a response
             json response = {
@@ -110,11 +112,12 @@ private:
                     // Push the PGN data object to the response
                     response["data"].push_back(pgnData);
                 } else {
-                    std::cout << "PGN " << pgn << " is not supported" << std::endl;
+                    std::cout << "ALERT: PGN " << pgn << " is not supported" << std::endl;
                 }
             }
 
             // Publish the response
+            std::cout << "Publishing READPGNS response" << std::endl;
             mosquitto_publish(mosq, nullptr, TOPIC_READ_PGN_RESPONSE, response.dump().size(), response.dump().c_str(), 0, false);
         } else if (message->topic == std::string(TOPIC_REQUEST_COMM)) {
             std::cout << "Received Open Comm Channel request: " << static_cast<char*>(message->payload) << std::endl;
@@ -131,16 +134,15 @@ private:
 
             // Send a response to the client
             json response = {
-                {"appID", appID},
-                {"sequenceNo", sequenceNo},
+                {"appID", request["appID"]},
                 {"connectionID", "your_connection_id"},
+                {"sequenceNo", sequenceNo},
                 {"responseCode", "0"} // Or other appropriate response code
             };
 
             std::cout << "Publishing Comm Response to the requestor" << std::endl;
             mosquitto_publish(mosq, nullptr, TOPIC_RESPONSE_COMM, response.dump().size(), response.dump().c_str(), 0, false);
-    }
-
+        }
     }
 };
 
