@@ -1,7 +1,8 @@
-
 #include <iostream>
 #include <string>
 #include <vector>
+#include <chrono>
+#include <iomanip>
 #include <mosquitto.h>
 #include <nlohmann/json.hpp>
 
@@ -21,6 +22,26 @@ const std::vector<std::string> SUPPORTED_PGNS = {
     "F001", "FD9F", "FDA3", "FE9A", "FEA4", "FEEE", "FEF0", "FEF5", "FEF6", "FEF7"
 };
 
+// Function to get the current date and time as a formatted string
+std::string getCurrentTimestamp() {
+    auto now = std::chrono::system_clock::now();
+    auto in_time_t = std::chrono::system_clock::to_time_t(now);
+
+    std::stringstream ss;
+    ss << std::put_time(std::localtime(&in_time_t), "%Y-%m-%d_%H:%M:%S");
+    return ss.str();
+}
+
+// Variadic log function to print any number of parameters with a timestamp
+template<typename... Args>
+void print(Args&&... args) {
+    // Print timestamp
+    std::cout << "[" << getCurrentTimestamp() << "] ";
+
+    // Use a fold expression to print each argument
+    (std::cout << ... << args) << std::endl;
+}
+
 class Translator {
 public:
     Translator() {
@@ -32,14 +53,14 @@ public:
             exit(1);
         }
 
-        std::cout << "Subscribing for " << TOPIC_REQUEST_COMM << std::endl;
-        mosquitto_subscribe(mosq, nullptr, TOPIC_REQUEST_COMM, 0); // Subscribe to the added topic
-        // Example of publishing an open communication channel request
-        publishOpenCommChannelResponse();
-
-        mosquitto_subscribe(mosq, nullptr, TOPIC_READ_PGN_REQUEST, 0);
         // Set up the callback for receiving messages
-        mosquitto_message_callback_set(mosq, messageCallback);
+        mosquitto_message_callback_set(mosq, messageCallback); // Built-in of MQTT library
+
+        print("Subscribing to ", TOPIC_REQUEST_COMM);
+        mosquitto_subscribe(mosq, nullptr, TOPIC_REQUEST_COMM, 0); // Subscribe to the added topic
+        print("Subscribing to ", TOPIC_REQUEST_COMM);
+        mosquitto_subscribe(mosq, nullptr, TOPIC_READ_PGN_REQUEST, 0); // Subscribe to readpgns topic
+        //publishOpenCommChannelResponse();
     }
 
     ~Translator() {
@@ -55,7 +76,7 @@ public:
             {"responseCode", "0"},
         };
 
-        std::cout << "Publishing Comm Response to the requestor" << std::endl;
+        print("Publishing Comm Response to the requestor: ", payload);
         mosquitto_publish(mosq, nullptr, TOPIC_RESPONSE_COMM, payload.dump().size(), payload.dump().c_str(), 0, false);
     }
 
@@ -71,7 +92,7 @@ private:
 
     static void messageCallback(struct mosquitto* mosq, void* userdata, const struct mosquitto_message* message) {
         if (message->topic == std::string(TOPIC_READ_PGN_REQUEST)) {
-            std::cout << "Received READ PGNs request: " << static_cast<char*>(message->payload) << std::endl;
+            print("Received READ PGNs request: ", static_cast<char*>(message->payload));
 
             // Handle the request
             json request = json::parse(static_cast<char*>(message->payload));
@@ -79,7 +100,7 @@ private:
             std::string sequenceNo = request["sequenceNo"];
             auto pgnNo = request["pgnNo"];
 
-            std::cout << "Received PGNs are: " << pgnNo << std::endl;
+            print("Received PGNs are: ", pgnNo);
 
             // Create a response
             json response = {
@@ -93,7 +114,7 @@ private:
             // Limit PGNs to supported ones
             for (const auto& pgn : pgnNo) {
                 if (std::find(SUPPORTED_PGNS.begin(), SUPPORTED_PGNS.end(), pgn) != SUPPORTED_PGNS.end()) {
-                    std::cout << "PGN " << pgn << " is supported" << std::endl;
+                    print("PGN: ", pgn, " is supported");
 
                     json spnArray = json::array(); // Create a new JSON array for SPNs
                     // Here, you would populate spnArray with SPN values if needed.
@@ -109,15 +130,15 @@ private:
                     // Push the PGN data object to the response
                     response["data"].push_back(pgnData);
                 } else {
-                    std::cout << "ALERT: PGN " << pgn << " is not supported" << std::endl;
+                    print("ALERT: PGN ", pgn, " is not supported");
                 }
             }
 
             // Publish the response
-            std::cout << "Publishing READPGNS response" << std::endl;
+            print("Publishing READPGNS response", response);
             mosquitto_publish(mosq, nullptr, TOPIC_READ_PGN_RESPONSE, response.dump().size(), response.dump().c_str(), 0, false);
         } else if (message->topic == std::string(TOPIC_REQUEST_COMM)) {
-            std::cout << "Received Open Comm Channel request: " << static_cast<char*>(message->payload) << std::endl;
+            print("Received Open Comm Channel request: ", static_cast<char*>(message->payload));
 
             // Parse the request JSON
             json request = json::parse(static_cast<char*>(message->payload));
@@ -132,7 +153,7 @@ private:
                 {"responseCode", "0"} // Or other appropriate response code
             };
 
-            std::cout << "Publishing Comm Response to the requestor" << std::endl;
+            print("Publishing Comm Response to the requestor", response);
             mosquitto_publish(mosq, nullptr, TOPIC_RESPONSE_COMM, response.dump().size(), response.dump().c_str(), 0, false);
         }
     }
