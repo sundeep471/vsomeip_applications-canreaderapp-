@@ -67,7 +67,7 @@ public:
         mosquitto_destroy(mosq);
         mosquitto_lib_cleanup();
     }
-
+    /*
     void publishOpenCommChannelResponse() {
         json payload = {
             {"appID", "data_sampler"},
@@ -79,7 +79,7 @@ public:
         print("Publishing Comm Response to the requestor: ", payload);
         mosquitto_publish(mosq, nullptr, TOPIC_RESPONSE_COMM, payload.dump().size(), payload.dump().c_str(), 0, false);
     }
-
+    */
     void loop() {
         // Keep processing messages
         while (true) {
@@ -114,10 +114,9 @@ private:
             // Limit PGNs to supported ones
             for (const auto& pgn : pgnNo) {
                 if (std::find(SUPPORTED_PGNS.begin(), SUPPORTED_PGNS.end(), pgn) != SUPPORTED_PGNS.end()) {
-                    print("PGN: ", pgn, " is supported");
-
                     json spnArray = json::array(); // Create a new JSON array for SPNs
                     // Here, you would populate spnArray with SPN values if needed.
+                    spnArray.push_back({{"spnNo", "972"}, {"spnValue", "3"}, {"valid", true}});
 
                     // Create a new JSON object for the PGN data
                     json pgnData = {
@@ -135,7 +134,7 @@ private:
             }
 
             // Publish the response
-            print("Publishing READPGNS response", response);
+            print("Publishing READPGNS response: ", response);
             mosquitto_publish(mosq, nullptr, TOPIC_READ_PGN_RESPONSE, response.dump().size(), response.dump().c_str(), 0, false);
         } else if (message->topic == std::string(TOPIC_REQUEST_COMM)) {
             print("Received Open Comm Channel request: ", static_cast<char*>(message->payload));
@@ -148,12 +147,12 @@ private:
             // Send a response to the client
             json response = {
                 {"appID", request["appID"]},
-                {"connectionID", "your_connection_id"},
+                {"connectionID", "0x95400f60"},
                 {"sequenceNo", request["sequenceNo"]},
                 {"responseCode", "0"} // Or other appropriate response code
             };
 
-            print("Publishing Comm Response to the requestor", response);
+            print("Publishing Comm Response to the requestor: ", response);
             mosquitto_publish(mosq, nullptr, TOPIC_RESPONSE_COMM, response.dump().size(), response.dump().c_str(), 0, false);
         }
     }
