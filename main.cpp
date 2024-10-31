@@ -58,7 +58,7 @@ public:
 
         print("Subscribing to ", TOPIC_REQUEST_COMM);
         mosquitto_subscribe(mosq, nullptr, TOPIC_REQUEST_COMM, 0); // Subscribe to the added topic
-        print("Subscribing to ", TOPIC_REQUEST_COMM);
+        print("Subscribing to ", TOPIC_READ_PGN_REQUEST);
         mosquitto_subscribe(mosq, nullptr, TOPIC_READ_PGN_REQUEST, 0); // Subscribe to readpgns topic
         //publishOpenCommChannelResponse();
     }
