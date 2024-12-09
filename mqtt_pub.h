@@ -48,25 +48,25 @@ public:
     }
 
     //void publish(const std::string& msg, const std::string& topic, int len) {
-    void publish(const void *msg, int len) {
+    void publish(const std::string &topic, const void *msg, int len) {
         if (mosq == nullptr) {
             std::cerr << "FATAL: Seems 'mosquitto' client is not initialized.";
             std::cerr << "Ensure 'mosquitto' broker is running and on right port number before publishing data\n";
             return;
-		}
+                }
 
         //int rc = mosquitto_publish(mosq, NULL, "test/t1", 6, "Hello", 0, false);
         //mosquitto_publish(mosq, nullptr, topic.c_str(), len, msg.c_str(), 0, false);
         //int rc = mosquitto_publish(mosq, nullptr, topic.c_str(), len, msg.c_str(), 0, false);
 
-        std::cout << "publishing msg: " << static_cast<const char*>(msg) << " of size " << len << std::endl;
+        std::cout << "publishing msg: " << static_cast<const char*>(msg) << "of size " << len << std::endl;
         std::cout << "Z1\n";
         std::cout << mosq << ": " << "len=" << len << std::endl;
         std::cout << mosq << ": " << "msg=" << msg << std::endl;
-        int rc = mosquitto_publish(mosq, NULL, "test/t1", len, msg, 0, false);
+        int rc = mosquitto_publish(mosq, NULL, topic.c_str(), len, msg, 0, false);
         std::cout << "Z2\n";
         if (rc != MOSQ_ERR_SUCCESS) {
-            std::cerr << "\nFailed to publish message. Error Code: " << rc << "\n";
+            std::cerr << "Failed to publish message. Error Code: " << rc << "\n";
         }
     }
 
