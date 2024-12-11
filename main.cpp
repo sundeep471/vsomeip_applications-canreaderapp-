@@ -270,7 +270,6 @@ void my_state_handler(vsomeip_v3::state_type_e ste) {
     std::cout << "HANDLER:  state_handler(" << get_state_type(ste) << ")" << std::endl;
 }
 
-
 void printMessageInfo(const std::string& messageTypeName, std::uint32_t rawIdentifier) {
     // Print the type name and raw identifier inside the function
     std::cout << "Message Type: " << messageTypeName << std::endl;
@@ -314,7 +313,7 @@ void processCanMessage(std::string &canId, ara::core::Span<const uint8_t> &canDa
     std::cout << "Args: canData: " << std::hex << canData[0] << canData[1] << canData[2] << canData[3] << canData[4] << canData[5] << canData[6] << std::endl;
     switch (std::stoul(canId, nullptr, 16) | 0x80000000) {
         case 0x98FEE617: {
-            message = canID_0x98FEE617{};
+            constexpr auto message = canID_0x98FEE617{};
             printMessageInfo(typeid(message).name(), message.GetRawIdentifier());
 
             ara::core::Optional<enum TimeDate_ICL::Seconds> (SecondsrawValue) = message.Seconds.GetEnumValue(canData);
@@ -349,7 +348,7 @@ void processCanMessage(std::string &canId, ara::core::Span<const uint8_t> &canDa
             }
             break;
         case 0x98FF554A: {
-            message = canID_0x98FF554A{};
+            constexpr auto message = canID_0x98FF554A{};
             printMessageInfo(typeid(message).name(), message.GetRawIdentifier());
             
             ara::core::Optional<std::uint16_t> (Metadata_CountryCode_0x06rawValue) = message.Metadata_CountryCode_0x06.GetRawValue(canData);
@@ -380,10 +379,6 @@ void processCanMessage(std::string &canId, ara::core::Span<const uint8_t> &canDa
             ara::core::Optional<enum ADASP1_RTC::Stub_Offset_0x03> (Stub_Offset_0x03rawValue) = message.Stub_Offset_0x03.GetEnumValue(canData);
             rawValue8 = static_cast <std::uint8_t>(Stub_Offset_0x03rawValue.value());
             topic = "can/ADASP1_RTC/Stub_Offset_0x03";
-
-
-
-
             publishSignal(topic, rawValue8, msqt_pub);
 
             ara::core::Optional<enum ADASP1_RTC::ADAS_MsgType> (ADAS_MsgTyperawValue) = message.ADAS_MsgType.GetEnumValue(canData);
@@ -658,7 +653,7 @@ void processCanMessage(std::string &canId, ara::core::Span<const uint8_t> &canDa
             }
             break;
         case 0x98FF6027: {
-            message = canID_0x98FF6027{};
+            constexpr auto message = canID_0x98FF6027{};
             printMessageInfo(typeid(message).name(), message.GetRawIdentifier());
             
             ara::core::Optional<enum GPM1_K::CalculatedGTWStatus> (CalculatedGTWStatusrawValue) = message.CalculatedGTWStatus.GetEnumValue(canData);
@@ -673,7 +668,7 @@ void processCanMessage(std::string &canId, ara::core::Span<const uint8_t> &canDa
             }
             break;
         case 0x8CFF6327: {
-            message = canID_0x8CFF6327{};
+            constexpr auto message = canID_0x8CFF6327{};
             printMessageInfo(typeid(message).name(), message.GetRawIdentifier());
             
             ara::core::Optional<enum GPM2_K::Charge61> (Charge61rawValue) = message.Charge61.GetEnumValue(canData);
@@ -698,7 +693,7 @@ void processCanMessage(std::string &canId, ara::core::Span<const uint8_t> &canDa
             }
             break;
         case 0x98FF4327: {
-            message = canID_0x98FF4327{};
+            constexpr auto message = canID_0x98FF4327{};
             printMessageInfo(typeid(message).name(), message.GetRawIdentifier());
             
             ara::core::Optional<enum BrakeLiningWearInformation2_K::AxleNumber> (AxleNumberrawValue) = message.AxleNumber.GetEnumValue(canData);
@@ -808,7 +803,7 @@ void processCanMessage(std::string &canId, ara::core::Span<const uint8_t> &canDa
             }
             break;
         case 0x98FE5EC8: {
-            message = canID_0x98FE5EC8{};
+            constexpr auto message = canID_0x98FE5EC8{};
             printMessageInfo(typeid(message).name(), message.GetRawIdentifier());
             
             ara::core::Optional<std::uint8_t> (TyreOrWheelIdentificationrawValue) = message.TyreOrWheelIdentification.GetRawValue(canData);
@@ -843,7 +838,7 @@ void processCanMessage(std::string &canId, ara::core::Span<const uint8_t> &canDa
             }
             break;
         case 0x98FE5EC0: {
-            message = canID_0x98FE5EC0{};
+            constexpr auto message = canID_0x98FE5EC0{};
             printMessageInfo(typeid(message).name(), message.GetRawIdentifier());
             
             ara::core::Optional<std::uint8_t> (TyreOrWheelIdentificationrawValue) = message.TyreOrWheelIdentification.GetRawValue(canData);
@@ -878,7 +873,7 @@ void processCanMessage(std::string &canId, ara::core::Span<const uint8_t> &canDa
             }
             break;
         case 0x98FE5EB8: {
-            message = canID_0x98FE5EB8{};
+            constexpr auto message = canID_0x98FE5EB8{};
             printMessageInfo(typeid(message).name(), message.GetRawIdentifier());
             
             ara::core::Optional<std::uint8_t> (TyreOrWheelIdentificationrawValue) = message.TyreOrWheelIdentification.GetRawValue(canData);
@@ -913,7 +908,7 @@ void processCanMessage(std::string &canId, ara::core::Span<const uint8_t> &canDa
             }
             break;
         case 0x98FE5EB0: {
-            message = canID_0x98FE5EB0{};
+            constexpr auto message = canID_0x98FE5EB0{};
             printMessageInfo(typeid(message).name(), message.GetRawIdentifier());
             
             ara::core::Optional<std::uint8_t> (TyreOrWheelIdentificationrawValue) = message.TyreOrWheelIdentification.GetRawValue(canData);
@@ -948,7 +943,7 @@ void processCanMessage(std::string &canId, ara::core::Span<const uint8_t> &canDa
             }
             break;
         case 0x98FE5EA8: {
-            message = canID_0x98FE5EA8{};
+            constexpr auto message = canID_0x98FE5EA8{};
             printMessageInfo(typeid(message).name(), message.GetRawIdentifier());
             
             ara::core::Optional<std::uint8_t> (TyreOrWheelIdentificationrawValue) = message.TyreOrWheelIdentification.GetRawValue(canData);
@@ -983,7 +978,7 @@ void processCanMessage(std::string &canId, ara::core::Span<const uint8_t> &canDa
             }
             break;
         case 0x98FEEA17: {
-            message = canID_0x98FEEA17{};
+            constexpr auto message = canID_0x98FEEA17{};
             printMessageInfo(typeid(message).name(), message.GetRawIdentifier());
             
             ara::core::Optional<enum VehicleWeight_ICL::AxleLocation> (AxleLocationrawValue) = message.AxleLocation.GetEnumValue(canData);
@@ -1008,7 +1003,7 @@ void processCanMessage(std::string &canId, ara::core::Span<const uint8_t> &canDa
             }
             break;
         case 0x99FF4F4A: {
-            message = canID_0x99FF4F4A{};
+            constexpr auto message = canID_0x99FF4F4A{};
             printMessageInfo(typeid(message).name(), message.GetRawIdentifier());
             
             ara::core::Optional<enum ImplicitSpeedLimit_RTC::motorwayMapSpeedLim> (motorwayMapSpeedLimrawValue) = message.motorwayMapSpeedLim.GetEnumValue(canData);
@@ -1043,7 +1038,7 @@ void processCanMessage(std::string &canId, ara::core::Span<const uint8_t> &canDa
             }
             break;
         case 0x99FF474A: {
-            message = canID_0x99FF474A{};
+            constexpr auto message = canID_0x99FF474A{};
             printMessageInfo(typeid(message).name(), message.GetRawIdentifier());
             
             ara::core::Optional<enum RTCInformationProprietary2_RTC::UpdatePrecondition> (UpdatePreconditionrawValue) = message.UpdatePrecondition.GetEnumValue(canData);
@@ -1053,7 +1048,7 @@ void processCanMessage(std::string &canId, ara::core::Span<const uint8_t> &canDa
             }
             break;
         case 0x99FF7347: {
-            message = canID_0x99FF7347{};
+            constexpr auto message = canID_0x99FF7347{};
             printMessageInfo(typeid(message).name(), message.GetRawIdentifier());
             
             ara::core::Optional<enum CI3_CMS::Battery24VCurrent> (Battery24VCurrentrawValue) = message.Battery24VCurrent.GetEnumValue(canData);
@@ -1063,7 +1058,7 @@ void processCanMessage(std::string &canId, ara::core::Span<const uint8_t> &canDa
             }
             break;
         case 0x98FEF127: {
-            message = canID_0x98FEF127{};
+            constexpr auto message = canID_0x98FEF127{};
             printMessageInfo(typeid(message).name(), message.GetRawIdentifier());
             
             ara::core::Optional<enum CruiseControlVehSpeed_K::ParkingBrakeSwitch> (ParkingBrakeSwitchrawValue) = message.ParkingBrakeSwitch.GetEnumValue(canData);
@@ -1098,7 +1093,7 @@ void processCanMessage(std::string &canId, ara::core::Span<const uint8_t> &canDa
             }
             break;
         case 0x99FF4150: {
-            message = canID_0x99FF4150{};
+            constexpr auto message = canID_0x99FF4150{};
             printMessageInfo(typeid(message).name(), message.GetRawIdentifier());
             
             ara::core::Optional<enum PBS1_EPB::ParkingBrakeReleaseInhibitStatus> (ParkingBrakeReleaseInhibitStatusrawValue) = message.ParkingBrakeReleaseInhibitStatus.GetEnumValue(canData);
@@ -1118,7 +1113,7 @@ void processCanMessage(std::string &canId, ara::core::Span<const uint8_t> &canDa
             }
             break;
         case 0x8DFF404A: {
-            message = canID_0x8DFF404A{};
+            constexpr auto message = canID_0x8DFF404A{};
             printMessageInfo(typeid(message).name(), message.GetRawIdentifier());
             
             ara::core::Optional<enum PBC1_RTC::ParkingBrakeReleaseInhibit> (ParkingBrakeReleaseInhibitrawValue) = message.ParkingBrakeReleaseInhibit.GetEnumValue(canData);
@@ -1143,7 +1138,7 @@ void processCanMessage(std::string &canId, ara::core::Span<const uint8_t> &canDa
             }
             break;
         case 0x8CFFFC4A: {
-            message = canID_0x8CFFFC4A{};
+            constexpr auto message = canID_0x8CFFFC4A{};
             printMessageInfo(typeid(message).name(), message.GetRawIdentifier());
             
             ara::core::Optional<enum ExternalControlMessage_RTC::EngineStartAllowed> (EngineStartAllowedrawValue) = message.EngineStartAllowed.GetEnumValue(canData);
@@ -1154,7 +1149,7 @@ void processCanMessage(std::string &canId, ara::core::Span<const uint8_t> &canDa
             }
             break;
         case 0x98FF8227: {
-            message = canID_0x98FF8227{};
+            constexpr auto message = canID_0x98FF8227{};
             printMessageInfo(typeid(message).name(), message.GetRawIdentifier());
             
             ara::core::Optional<enum DLN9_K::PropulsionState> (PropulsionStaterawValue) = message.PropulsionState.GetEnumValue(canData);
@@ -1169,7 +1164,7 @@ void processCanMessage(std::string &canId, ara::core::Span<const uint8_t> &canDa
             }
             break;
         case 0x98F00503: {
-            message = canID_0x98F00503{};
+            constexpr auto message = canID_0x98F00503{};
             printMessageInfo(typeid(message).name(), message.GetRawIdentifier());
             
             ara::core::Optional<enum ETC2_T::SelectedGear> (SelectedGearrawValue) = message.SelectedGear.GetEnumValue(canData);
@@ -1184,7 +1179,7 @@ void processCanMessage(std::string &canId, ara::core::Span<const uint8_t> &canDa
             }
             break;
         case 0x98FEF34A: {
-            message = canID_0x98FEF34A{};
+            constexpr auto message = canID_0x98FEF34A{};
             printMessageInfo(typeid(message).name(), message.GetRawIdentifier());
             
             ara::core::Optional<enum VehiclePosition_1000_RTC::Latitude> (LatituderawValue) = message.Latitude.GetEnumValue(canData);
@@ -1199,7 +1194,7 @@ void processCanMessage(std::string &canId, ara::core::Span<const uint8_t> &canDa
             }
             break;
         case 0x98FEE84A: {
-            message = canID_0x98FEE84A{};
+            constexpr auto message = canID_0x98FEE84A{};
             printMessageInfo(typeid(message).name(), message.GetRawIdentifier());
             
             ara::core::Optional<enum VehiDirSpeed_1000_RTC::CompassBearing> (CompassBearingrawValue) = message.CompassBearing.GetEnumValue(canData);
@@ -1224,7 +1219,7 @@ void processCanMessage(std::string &canId, ara::core::Span<const uint8_t> &canDa
             }
             break;
         case 0x98FF6E03: {
-            message = canID_0x98FF6E03{};
+            constexpr auto message = canID_0x98FF6E03{};
             printMessageInfo(typeid(message).name(), message.GetRawIdentifier());
             
             ara::core::Optional<enum TI_T::EcoRollActive> (EcoRollActiverawValue) = message.EcoRollActive.GetEnumValue(canData);
@@ -1239,7 +1234,7 @@ void processCanMessage(std::string &canId, ara::core::Span<const uint8_t> &canDa
             }
             break;
         case 0x8CFF04EF: {
-            message = canID_0x8CFF04EF{};
+            constexpr auto message = canID_0x8CFF04EF{};
             printMessageInfo(typeid(message).name(), message.GetRawIdentifier());
             
             ara::core::Optional<enum SecondaryWakeUp_HMS::WakeUp_RTC> (WakeUp_RTCrawValue) = message.WakeUp_RTC.GetEnumValue(canData);
@@ -1249,7 +1244,7 @@ void processCanMessage(std::string &canId, ara::core::Span<const uint8_t> &canDa
             }
             break;
         case 0x98FD7D17: {
-            message = canID_0x98FD7D17{};
+            constexpr auto message = canID_0x98FD7D17{};
             printMessageInfo(typeid(message).name(), message.GetRawIdentifier());
             
             ara::core::Optional<enum TelltaleStatus_ICL::TelltaleBlockID> (TelltaleBlockIDrawValue) = message.TelltaleBlockID.GetEnumValue(canData);
@@ -1334,7 +1329,7 @@ void processCanMessage(std::string &canId, ara::core::Span<const uint8_t> &canDa
             }
             break;
         case 0x98FF6B27: {
-            message = canID_0x98FF6B27{};
+            constexpr auto message = canID_0x98FF6B27{};
             
             printMessageInfo(typeid(message).name(), message.GetRawIdentifier());
 
@@ -1360,7 +1355,7 @@ void processCanMessage(std::string &canId, ara::core::Span<const uint8_t> &canDa
             }
             break;
         case 0x98FFAE27: {
-            message = canID_0x98FFAE27{};
+            constexpr auto message = canID_0x98FFAE27{};
             printMessageInfo(typeid(message).name(), message.GetRawIdentifier());
             
             ara::core::Optional<enum ServiceInformationProp_K::ServiceDistanceProp> (ServiceDistanceProprawValue) = message.ServiceDistanceProp.GetEnumValue(canData);
@@ -1385,7 +1380,7 @@ void processCanMessage(std::string &canId, ara::core::Span<const uint8_t> &canDa
             }
             break;
         case 0x98FFBE1D: {
-            message = canID_0x98FFBE1D{};
+            constexpr auto message = canID_0x98FFBE1D{};
             printMessageInfo(typeid(message).name(), message.GetRawIdentifier());
 
             ara::core::Optional<enum AlarmStatusProp_ALM::AlarmOnOffStatus> (AlarmOnOffStatusrawValue) = message.AlarmOnOffStatus.GetEnumValue(canData);
@@ -1515,7 +1510,7 @@ void processCanMessage(std::string &canId, ara::core::Span<const uint8_t> &canDa
             }
             break;
         case 0x8CFF7427: {
-            message = canID_0x8CFF7427{};
+            constexpr auto message = canID_0x8CFF7427{};
             printMessageInfo(typeid(message).name(), message.GetRawIdentifier());
             
             ara::core::Optional<enum PowertrainControl2_K::AcceleratorPedalPosition> (AcceleratorPedalPositionrawValue) = message.AcceleratorPedalPosition.GetEnumValue(canData);
@@ -1525,7 +1520,7 @@ void processCanMessage(std::string &canId, ara::core::Span<const uint8_t> &canDa
             }
             break;
         case 0x99FF2327: {
-            message = canID_0x99FF2327{};
+            constexpr auto message = canID_0x99FF2327{};
             printMessageInfo(typeid(message).name(), message.GetRawIdentifier());
             
             ara::core::Optional<enum AccumulatedTripDataParams_K::AccumulatedTripDataParams> (AccumulatedTripDataParamsrawValue) = message.AccumulatedTripDataParams.GetEnumValue(canData);
@@ -1685,7 +1680,7 @@ void processCanMessage(std::string &canId, ara::core::Span<const uint8_t> &canDa
             }
             break;
         case 0x98FEF527: {
-            message = canID_0x98FEF527{};
+            constexpr auto message = canID_0x98FEF527{};
             
             printMessageInfo(typeid(message).name(), message.GetRawIdentifier());
             ara::core::Optional<enum AmbientConditions_K::AmbientAirTemperature> (AmbientAirTemperaturerawValue) = message.AmbientAirTemperature.GetEnumValue(canData);
@@ -1695,7 +1690,7 @@ void processCanMessage(std::string &canId, ara::core::Span<const uint8_t> &canDa
             }
             break;
         case 0x99FF3C27: {
-            message = canID_0x99FF3C27{};
+            constexpr auto message = canID_0x99FF3C27{};
             
             printMessageInfo(typeid(message).name(), message.GetRawIdentifier());
             ara::core::Optional<enum GPM10_K::AuxiliaryAmbientAirTemperature> (AuxiliaryAmbientAirTemperaturerawValue) = message.AuxiliaryAmbientAirTemperature.GetEnumValue(canData);
@@ -1705,7 +1700,7 @@ void processCanMessage(std::string &canId, ara::core::Span<const uint8_t> &canDa
             }
             break;
         case 0x98FE6B27: {
-            message = canID_0x98FE6B27{};
+            constexpr auto message = canID_0x98FE6B27{};
             printMessageInfo(typeid(message).name(), message.GetRawIdentifier());
             
             ara::core::Optional<std::int8_t> (Driver1IdentifierrawValue) = message.Driver1Identifier.GetRawValue(canData);
@@ -1730,7 +1725,7 @@ void processCanMessage(std::string &canId, ara::core::Span<const uint8_t> &canDa
             }
             break;
         case 0x98ECFF27: {
-            message = canID_0x98ECFF27{};
+            constexpr auto message = canID_0x98ECFF27{};
             printMessageInfo(typeid(message).name(), message.GetRawIdentifier());
 
             ara::core::Optional<enum TP_CM_K_FF::ControlByteTP_CM> (ControlByteTP_CMrawValue) = message.ControlByteTP_CM.GetEnumValue(canData);
@@ -1755,7 +1750,7 @@ void processCanMessage(std::string &canId, ara::core::Span<const uint8_t> &canDa
             }
             break;
         case 0x98EBFF27: {
-            message = canID_0x98EBFF27{};
+            constexpr auto message = canID_0x98EBFF27{};
             printMessageInfo(typeid(message).name(), message.GetRawIdentifier());
             
             ara::core::Optional<std::uint8_t> (SequenceNumberrawValue) = message.SequenceNumber.GetRawValue(canData);
@@ -1800,7 +1795,7 @@ void processCanMessage(std::string &canId, ara::core::Span<const uint8_t> &canDa
             }
             break;
         case 0x98FF9027: {
-            message = canID_0x98FF9027{};
+            constexpr auto message = canID_0x98FF9027{};
             printMessageInfo(typeid(message).name(), message.GetRawIdentifier());
             
             ara::core::Optional<enum PTOInformationProp_K::PTO_AL1> (PTO_AL1rawValue) = message.PTO_AL1.GetEnumValue(canData);
@@ -1825,7 +1820,7 @@ void processCanMessage(std::string &canId, ara::core::Span<const uint8_t> &canDa
             }
             break;
         case 0x9CFF0627: {
-            message = canID_0x9CFF0627{};
+            constexpr auto message = canID_0x9CFF0627{};
             
             printMessageInfo(typeid(message).name(), message.GetRawIdentifier());
             ara::core::Optional<enum DriverEvaluationData_K::DriverEvaluationCategory1> (DriverEvaluationCategory1rawValue) = message.DriverEvaluationCategory1.GetEnumValue(canData);
@@ -1871,7 +1866,7 @@ void processCanMessage(std::string &canId, ara::core::Span<const uint8_t> &canDa
             }
             break;
         case 0x9CFF1327: {
-            message = canID_0x9CFF1327{};
+            constexpr auto message = canID_0x9CFF1327{};
             printMessageInfo(typeid(message).name(), message.GetRawIdentifier());
             
             ara::core::Optional<enum DriverEvaluationEvents_K::InstEventWeight_Cat1> (InstEventWeight_Cat1rawValue) = message.InstEventWeight_Cat1.GetEnumValue(canData);
@@ -1921,7 +1916,7 @@ void processCanMessage(std::string &canId, ara::core::Span<const uint8_t> &canDa
             }
             break;
         case 0x98EC4A27: {
-            message = canID_0x98EC4A27{};
+            constexpr auto message = canID_0x98EC4A27{};
             printMessageInfo(typeid(message).name(), message.GetRawIdentifier());
 
             ara::core::Optional<enum TP_CM_K_RTC::ControlByteTP_CM> (ControlByteTP_CMrawValue) = message.ControlByteTP_CM.GetEnumValue(canData);
@@ -1946,7 +1941,7 @@ void processCanMessage(std::string &canId, ara::core::Span<const uint8_t> &canDa
             }
             break;
         case 0x98EB4A27: {
-            message = canID_0x98EB4A27{};
+            constexpr auto message = canID_0x98EB4A27{};
             printMessageInfo(typeid(message).name(), message.GetRawIdentifier());
             
             ara::core::Optional<std::uint8_t> (SequenceNumberrawValue) = message.SequenceNumber.GetRawValue(canData);
@@ -1991,7 +1986,7 @@ void processCanMessage(std::string &canId, ara::core::Span<const uint8_t> &canDa
             }
             break;
         case 0x98FEEC27: {
-            message = canID_0x98FEEC27{};
+            constexpr auto message = canID_0x98FEEC27{};
             printMessageInfo(typeid(message).name(), message.GetRawIdentifier());
             
             ara::core::Optional<std::int8_t> (VehicleIdentificationrawValue) = message.VehicleIdentification.GetRawValue(canData);
@@ -2006,7 +2001,7 @@ void processCanMessage(std::string &canId, ara::core::Span<const uint8_t> &canDa
             }
             break;
         case 0x98FFB11E: {
-            message = canID_0x98FFB11E{};
+            constexpr auto message = canID_0x98FFB11E{};
             printMessageInfo(typeid(message).name(), message.GetRawIdentifier());
             
             ara::core::Optional<enum CUVInformation_V::HeadLampFailure> (HeadLampFailurerawValue) = message.HeadLampFailure.GetEnumValue(canData);
@@ -2026,7 +2021,7 @@ void processCanMessage(std::string &canId, ara::core::Span<const uint8_t> &canDa
             }
             break;
         case 0x98FFD517: {
-            message = canID_0x98FFD517{};
+            constexpr auto message = canID_0x98FFD517{};
             printMessageInfo(typeid(message).name(), message.GetRawIdentifier());
             
             ara::core::Optional<enum ICLInformationProprietary_ICL::PerformanceMode> (PerformanceModerawValue) = message.PerformanceMode.GetEnumValue(canData);
@@ -2036,7 +2031,7 @@ void processCanMessage(std::string &canId, ara::core::Span<const uint8_t> &canDa
             }
             break;
         case 0x99FF8400: {
-            message = canID_0x99FF8400{};
+            constexpr auto message = canID_0x99FF8400{};
             printMessageInfo(typeid(message).name(), message.GetRawIdentifier());
             
             ara::core::Optional<enum ReductantDTEInformation_E::TotalReductantUsed> (TotalReductantUsedrawValue) = message.TotalReductantUsed.GetEnumValue(canData);
@@ -2046,7 +2041,7 @@ void processCanMessage(std::string &canId, ara::core::Span<const uint8_t> &canDa
             }
             break;
         case 0x8CFE6CEE: {
-            message = canID_0x8CFE6CEE{};
+            constexpr auto message = canID_0x8CFE6CEE{};
             printMessageInfo(typeid(message).name(), message.GetRawIdentifier());
             
             ara::core::Optional<enum TCO1_TCO::Driver1WorkingState> (Driver1WorkingStaterawValue) = message.Driver1WorkingState.GetEnumValue(canData);
@@ -2116,7 +2111,7 @@ void processCanMessage(std::string &canId, ara::core::Span<const uint8_t> &canDa
             }
             break;
         case 0x98FEC1EE: {
-            message = canID_0x98FEC1EE{};
+            constexpr auto message = canID_0x98FEC1EE{};
             printMessageInfo(typeid(message).name(), message.GetRawIdentifier());
             
             ara::core::Optional<enum HiResVehicleDist_TCO::HighResolTotalVehicleDistance> (HighResolTotalVehicleDistancerawValue) = message.HighResolTotalVehicleDistance.GetEnumValue(canData);
@@ -2126,7 +2121,7 @@ void processCanMessage(std::string &canId, ara::core::Span<const uint8_t> &canDa
             }
             break;
         case 0x98FF400B: {
-            message = canID_0x98FF400B{};
+            constexpr auto message = canID_0x98FF400B{};
             printMessageInfo(typeid(message).name(), message.GetRawIdentifier());
             
             ara::core::Optional<enum BSS2_A::BrakeLiningWearWarning> (BrakeLiningWearWarningrawValue) = message.BrakeLiningWearWarning.GetEnumValue(canData);
@@ -2136,7 +2131,7 @@ void processCanMessage(std::string &canId, ara::core::Span<const uint8_t> &canDa
             }
             break;
         case 0x98FF5F00: {
-            message = canID_0x98FF5F00{};
+            constexpr auto message = canID_0x98FF5F00{};
             printMessageInfo(typeid(message).name(), message.GetRawIdentifier());
             
             ara::core::Optional<enum EngineInfoProprietary2_E::UreaLevel> (UreaLevelrawValue) = message.UreaLevel.GetEnumValue(canData);
@@ -2156,7 +2151,7 @@ void processCanMessage(std::string &canId, ara::core::Span<const uint8_t> &canDa
             }
             break;
         case 0x8CF00300: {
-            message = canID_0x8CF00300{};
+            constexpr auto message = canID_0x8CF00300{};
             printMessageInfo(typeid(message).name(), message.GetRawIdentifier());
             
             ara::core::Optional<enum EEC2_E::AcceleratorPedalPosition> (AcceleratorPedalPositionrawValue) = message.AcceleratorPedalPosition.GetEnumValue(canData);
@@ -2171,7 +2166,7 @@ void processCanMessage(std::string &canId, ara::core::Span<const uint8_t> &canDa
             }
             break;
         case 0x98FD0900: {
-            message = canID_0x98FD0900{};
+            constexpr auto message = canID_0x98FD0900{};
             printMessageInfo(typeid(message).name(), message.GetRawIdentifier());
             
             ara::core::Optional<enum HRLFC_E::HighResEngineTotalFuelUsed> (HighResEngineTotalFuelUsedrawValue) = message.HighResEngineTotalFuelUsed.GetEnumValue(canData);
@@ -2181,7 +2176,7 @@ void processCanMessage(std::string &canId, ara::core::Span<const uint8_t> &canDa
             }
             break;
         case 0x99FF4600: {
-            message = canID_0x99FF4600{};
+            constexpr auto message = canID_0x99FF4600{};
             printMessageInfo(typeid(message).name(), message.GetRawIdentifier());
             
             ara::core::Optional<enum OBDInformation2_E::DegradationInformation> (DegradationInformationrawValue) = message.DegradationInformation.GetEnumValue(canData);
@@ -2191,7 +2186,7 @@ void processCanMessage(std::string &canId, ara::core::Span<const uint8_t> &canDa
             }
             break;
         case 0x98FF7C00: {
-            message = canID_0x98FF7C00{};
+            constexpr auto message = canID_0x98FF7C00{};
             printMessageInfo(typeid(message).name(), message.GetRawIdentifier());
             
             ara::core::Optional<enum PowertrainInformation3_E::LowEngineOilPressure> (LowEngineOilPressurerawValue) = message.LowEngineOilPressure.GetEnumValue(canData);
@@ -2211,7 +2206,7 @@ void processCanMessage(std::string &canId, ara::core::Span<const uint8_t> &canDa
             }
             break;
         case 0x8CF00400: {
-            message = canID_0x8CF00400{};
+            constexpr auto message = canID_0x8CF00400{};
             printMessageInfo(typeid(message).name(), message.GetRawIdentifier());
             
             ara::core::Optional<enum EEC1_E::ActualEngine_PercTorque> (ActualEngine_PercTorquerawValue) = message.ActualEngine_PercTorque.GetEnumValue(canData);
@@ -2226,7 +2221,7 @@ void processCanMessage(std::string &canId, ara::core::Span<const uint8_t> &canDa
             }
             break;
         case 0x98FEE900: {
-            message = canID_0x98FEE900{};
+            constexpr auto message = canID_0x98FEE900{};
             printMessageInfo(typeid(message).name(), message.GetRawIdentifier());
             
             ara::core::Optional<enum FuelConsumption_E::TotalFuelUsed> (TotalFuelUsedrawValue) = message.TotalFuelUsed.GetEnumValue(canData);
@@ -2236,7 +2231,7 @@ void processCanMessage(std::string &canId, ara::core::Span<const uint8_t> &canDa
             }
             break;
         case 0x98FEF200: {
-            message = canID_0x98FEF200{};
+            constexpr auto message = canID_0x98FEF200{};
             printMessageInfo(typeid(message).name(), message.GetRawIdentifier());
             
             ara::core::Optional<enum FuelEconomy_E::FuelRate> (FuelRaterawValue) = message.FuelRate.GetEnumValue(canData);
@@ -2251,7 +2246,7 @@ void processCanMessage(std::string &canId, ara::core::Span<const uint8_t> &canDa
             }
             break;
         case 0x98FECA00: {
-            message = canID_0x98FECA00{};
+            constexpr auto message = canID_0x98FECA00{};
             printMessageInfo(typeid(message).name(), message.GetRawIdentifier());
 
             ara::core::Optional<enum DM1_E::RedStopLampStatus> (RedStopLampStatusrawValue) = message.RedStopLampStatus.GetEnumValue(canData);
@@ -2261,7 +2256,7 @@ void processCanMessage(std::string &canId, ara::core::Span<const uint8_t> &canDa
             }
             break;
         case 0x98FF6000: {
-            message = canID_0x98FF6000{};
+            constexpr auto message = canID_0x98FF6000{};
             printMessageInfo(typeid(message).name(), message.GetRawIdentifier());
             
             ara::core::Optional<enum GPM1_E::CalculatedGTW> (CalculatedGTWrawValue) = message.CalculatedGTW.GetEnumValue(canData);
@@ -2271,7 +2266,7 @@ void processCanMessage(std::string &canId, ara::core::Span<const uint8_t> &canDa
             }
             break;
         case 0x98FD7C00: {
-            message = canID_0x98FD7C00{};
+            constexpr auto message = canID_0x98FD7C00{};
             printMessageInfo(typeid(message).name(), message.GetRawIdentifier());
             
             ara::core::Optional<enum DPFC1_E::DpfStatus> (DpfStatusrawValue) = message.DpfStatus.GetEnumValue(canData);
@@ -2281,7 +2276,7 @@ void processCanMessage(std::string &canId, ara::core::Span<const uint8_t> &canDa
             }
             break;
         case 0x98FF7A00: {
-            message = canID_0x98FF7A00{};
+            constexpr auto message = canID_0x98FF7A00{};
             printMessageInfo(typeid(message).name(), message.GetRawIdentifier());
             
             ara::core::Optional<enum PowertrainInformation1_E::ManualRegenState> (ManualRegenStaterawValue) = message.ManualRegenState.GetEnumValue(canData);
@@ -2296,7 +2291,7 @@ void processCanMessage(std::string &canId, ara::core::Span<const uint8_t> &canDa
             }
             break;
         case 0x98FEBF0B: {
-            message = canID_0x98FEBF0B{};
+            constexpr auto message = canID_0x98FEBF0B{};
             printMessageInfo(typeid(message).name(), message.GetRawIdentifier());
             
             ara::core::Optional<enum EBC2_A::FrontAxleSpeed> (FrontAxleSpeedrawValue) = message.FrontAxleSpeed.GetEnumValue(canData);
@@ -2316,7 +2311,7 @@ void processCanMessage(std::string &canId, ara::core::Span<const uint8_t> &canDa
             }
             break;
         case 0x98FFA303: {
-            message = canID_0x98FFA303{};
+            constexpr auto message = canID_0x98FFA303{};
             printMessageInfo(typeid(message).name(), message.GetRawIdentifier());
             
             ara::core::Optional<enum TransmissionProprietary3_T::LowClutchFluidLevel> (LowClutchFluidLevelrawValue) = message.LowClutchFluidLevel.GetEnumValue(canData);
@@ -2331,7 +2326,7 @@ void processCanMessage(std::string &canId, ara::core::Span<const uint8_t> &canDa
             }
             break;
         case 0x98FDC40B: {
-            message = canID_0x98FDC40B{};
+            constexpr auto message = canID_0x98FDC40B{};
             printMessageInfo(typeid(message).name(), message.GetRawIdentifier());
             
             ara::core::Optional<enum EBC5_A::BrakeTemperatureWarning> (BrakeTemperatureWarningrawValue) = message.BrakeTemperatureWarning.GetEnumValue(canData);
@@ -2341,7 +2336,7 @@ void processCanMessage(std::string &canId, ara::core::Span<const uint8_t> &canDa
             }
             break;
         case 0x98FEFC47: {
-            message = canID_0x98FEFC47{};
+            constexpr auto message = canID_0x98FEFC47{};
             printMessageInfo(typeid(message).name(), message.GetRawIdentifier());
             
             ara::core::Optional<enum DashDisplay_CMS::FuelLevel> (FuelLevelrawValue) = message.FuelLevel.GetEnumValue(canData);
@@ -2351,7 +2346,7 @@ void processCanMessage(std::string &canId, ara::core::Span<const uint8_t> &canDa
             }
             break;
         case 0x98FF7B00: {
-            message = canID_0x98FF7B00{};
+            constexpr auto message = canID_0x98FF7B00{};
             printMessageInfo(typeid(message).name(), message.GetRawIdentifier());
             
             ara::core::Optional<enum OBDInformation_E::TorqueLimTimeHoursOrMinutes> (TorqueLimTimeHoursOrMinutesrawValue) = message.TorqueLimTimeHoursOrMinutes.GetEnumValue(canData);
@@ -2376,7 +2371,7 @@ void processCanMessage(std::string &canId, ara::core::Span<const uint8_t> &canDa
             }
             break;
         case 0x98FE4EE6: {
-            message = canID_0x98FE4EE6{};
+            constexpr auto message = canID_0x98FE4EE6{};
             printMessageInfo(typeid(message).name(), message.GetRawIdentifier());
             
             ara::core::Optional<enum DoorControl1_BCI::PositionOfDoors> (PositionOfDoorsrawValue) = message.PositionOfDoors.GetEnumValue(canData);
@@ -2386,7 +2381,7 @@ void processCanMessage(std::string &canId, ara::core::Span<const uint8_t> &canDa
             }
             break;
         case 0x98FF6017: {
-            message = canID_0x98FF6017{};
+            constexpr auto message = canID_0x98FF6017{};
             printMessageInfo(typeid(message).name(), message.GetRawIdentifier());
             
             ara::core::Optional<enum GPM1_ICL::ChassiNo> (ChassiNorawValue) = message.ChassiNo.GetEnumValue(canData);
@@ -2396,7 +2391,7 @@ void processCanMessage(std::string &canId, ara::core::Span<const uint8_t> &canDa
             }
             break;
         case 0x98E8FFEE: {
-            message = canID_0x98E8FFEE{};
+            constexpr auto message = canID_0x98E8FFEE{};
             printMessageInfo(typeid(message).name(), message.GetRawIdentifier());
             
             ara::core::Optional<enum Acknowledgement_TCO_FF::ControlByte_ACK> (ControlByte_ACKrawValue) = message.ControlByte_ACK.GetEnumValue(canData);
@@ -2426,7 +2421,7 @@ void processCanMessage(std::string &canId, ara::core::Span<const uint8_t> &canDa
             }
             break;
         case 0x98EAEE4A: {
-            message = canID_0x98EAEE4A{};
+            constexpr auto message = canID_0x98EAEE4A{};
             printMessageInfo(typeid(message).name(), message.GetRawIdentifier());
             
             ara::core::Optional<std::uint32_t> (PGNrawValue) = message.PGN.GetRawValue(canData);
@@ -2436,7 +2431,7 @@ void processCanMessage(std::string &canId, ara::core::Span<const uint8_t> &canDa
             }
             break;
         case 0x98EA274A: {
-            message = canID_0x98EA274A{};
+            constexpr auto message = canID_0x98EA274A{};
             printMessageInfo(typeid(message).name(), message.GetRawIdentifier());
 
             ara::core::Optional<std::uint32_t> (PGNrawValue) = message.PGN.GetRawValue(canData);
@@ -2446,7 +2441,7 @@ void processCanMessage(std::string &canId, ara::core::Span<const uint8_t> &canDa
             }
             break;
         case 0x98E8FF27: {
-            message = canID_0x98E8FF27{};
+            constexpr auto message = canID_0x98E8FF27{};
             printMessageInfo(typeid(message).name(), message.GetRawIdentifier());
 
             ara::core::Optional<enum Acknowledgement_K_FF::ControlByte_ACK> (ControlByte_ACKrawValue) = message.ControlByte_ACK.GetEnumValue(canData);
@@ -2516,7 +2511,7 @@ void processCanMessage(std::string &canId, ara::core::Span<const uint8_t> &canDa
             }
             break;
         case 0x98FF52EF: {
-            message = canID_0x98FF52EF{};
+            constexpr auto message = canID_0x98FF52EF{};
             printMessageInfo(typeid(message).name(), message.GetRawIdentifier());
             
             ara::core::Optional<enum HybridInfoProp_HMS::VCBBatteryChargeMux> (VCBBatteryChargeMuxrawValue) = message.VCBBatteryChargeMux.GetEnumValue(canData);
@@ -2556,7 +2551,7 @@ void processCanMessage(std::string &canId, ara::core::Span<const uint8_t> &canDa
             }
             break;
         case 0x9CFE9200: {
-            message = canID_0x9CFE9200{};
+            constexpr auto message = canID_0x9CFE9200{};
             printMessageInfo(typeid(message).name(), message.GetRawIdentifier());
             
             ara::core::Optional<enum EI_E::EngMassFlow> (EngMassFlowrawValue) = message.EngMassFlow.GetEnumValue(canData);
@@ -2566,7 +2561,7 @@ void processCanMessage(std::string &canId, ara::core::Span<const uint8_t> &canDa
             }
             break;
         case 0x9CFEAF00: {
-            message = canID_0x9CFEAF00{};
+            constexpr auto message = canID_0x9CFEAF00{};
             printMessageInfo(typeid(message).name(), message.GetRawIdentifier());
             
             ara::core::Optional<enum GFC_E::TotalFuelUsed> (TotalFuelUsedrawValue) = message.TotalFuelUsed.GetEnumValue(canData);
@@ -2576,7 +2571,7 @@ void processCanMessage(std::string &canId, ara::core::Span<const uint8_t> &canDa
             }
             break;
         case 0x98FE6BEE: {
-            message = canID_0x98FE6BEE{};
+            constexpr auto message = canID_0x98FE6BEE{};
             printMessageInfo(typeid(message).name(), message.GetRawIdentifier());
 
             ara::core::Optional<std::int8_t> (Driver1IdentifierrawValue) = message.Driver1Identifier.GetRawValue(canData);
@@ -2596,7 +2591,7 @@ void processCanMessage(std::string &canId, ara::core::Span<const uint8_t> &canDa
             }
             break;
         case 0x98EC4AEE: {
-            message = canID_0x98EC4AEE{};
+            constexpr auto message = canID_0x98EC4AEE{};
             printMessageInfo(typeid(message).name(), message.GetRawIdentifier());
 
             ara::core::Optional<enum TP_CM_TCO_RTC::ControlByteTP_CM> (ControlByteTP_CMrawValue) = message.ControlByteTP_CM.GetEnumValue(canData);
@@ -2622,7 +2617,7 @@ void processCanMessage(std::string &canId, ara::core::Span<const uint8_t> &canDa
             break;
         case 0x98EB4AEE: {
             //TODO
-            message = canID_0x98EB4AEE{};
+            constexpr auto message = canID_0x98EB4AEE{};
             printMessageInfo(typeid(message).name(), message.GetRawIdentifier());
 
             ara::core::Optional<std::uint8_t> (SequenceNumberrawValue) = message.SequenceNumber.GetRawValue(canData);
@@ -2667,7 +2662,7 @@ void processCanMessage(std::string &canId, ara::core::Span<const uint8_t> &canDa
             }
             break;
         case 0x99FF8347: {
-            message = canID_0x99FF8347{};
+            constexpr auto message = canID_0x99FF8347{};
             printMessageInfo(typeid(message).name(), message.GetRawIdentifier());
 
             ara::core::Optional<enum DistanceToEmpty_CMS::DTEUnit> (DTEUnitrawValue) = message.DTEUnit.GetEnumValue(canData);
@@ -2707,7 +2702,7 @@ void processCanMessage(std::string &canId, ara::core::Span<const uint8_t> &canDa
             }
             break;
         case 0x99FFA633: {
-            message = canID_0x99FFA633{};
+            constexpr auto message = canID_0x99FFA633{};
             printMessageInfo(typeid(message).name(), message.GetRawIdentifier());
 
             ara::core::Optional<enum TireConditionProprietary2_TM::TirePressThresholdDetection> (TirePressThresholdDetectionrawValue) = message.TirePressThresholdDetection.GetEnumValue(canData);
@@ -2717,7 +2712,7 @@ void processCanMessage(std::string &canId, ara::core::Span<const uint8_t> &canDa
             }
             break;
         case 0x99FFA6AF: {
-            message = canID_0x99FFA6AF{};
+            constexpr auto message = canID_0x99FFA6AF{};
             printMessageInfo(typeid(message).name(), message.GetRawIdentifier());
 
             ara::core::Optional<enum TireConditionProprietary2_TPM_AF::TirePressThresholdDetection> (TirePressThresholdDetectionrawValue) = message.TirePressThresholdDetection.GetEnumValue(canData);
@@ -2727,7 +2722,7 @@ void processCanMessage(std::string &canId, ara::core::Span<const uint8_t> &canDa
             }
             break;
         case 0x99FFA6B7: {
-            message = canID_0x99FFA6B7{};
+            constexpr auto message = canID_0x99FFA6B7{};
             printMessageInfo(typeid(message).name(), message.GetRawIdentifier());
 
             ara::core::Optional<enum TireConditionProprietary2_TPM_B7::TirePressThresholdDetection> (TirePressThresholdDetectionrawValue) = message.TirePressThresholdDetection.GetEnumValue(canData);
@@ -2737,7 +2732,7 @@ void processCanMessage(std::string &canId, ara::core::Span<const uint8_t> &canDa
             }
             break;
         case 0x99FFA6BF: {
-            message = canID_0x99FFA6BF{};
+            constexpr auto message = canID_0x99FFA6BF{};
             printMessageInfo(typeid(message).name(), message.GetRawIdentifier());
 
             ara::core::Optional<enum TireConditionProprietary2_TPM_BF::TirePressThresholdDetection> (TirePressThresholdDetectionrawValue) = message.TirePressThresholdDetection.GetEnumValue(canData);
@@ -2747,7 +2742,7 @@ void processCanMessage(std::string &canId, ara::core::Span<const uint8_t> &canDa
             }
             break;
         case 0x99FFA6C7: {
-            message = canID_0x99FFA6C7{};
+            constexpr auto message = canID_0x99FFA6C7{};
             printMessageInfo(typeid(message).name(), message.GetRawIdentifier());
 
             ara::core::Optional<enum TireConditionProprietary2_TPM_C7::TirePressThresholdDetection> (TirePressThresholdDetectionrawValue) = message.TirePressThresholdDetection.GetEnumValue(canData);
@@ -2757,7 +2752,7 @@ void processCanMessage(std::string &canId, ara::core::Span<const uint8_t> &canDa
             }
             break;
         case 0x99FFA6CF: {
-            message = canID_0x99FFA6CF{};
+            constexpr auto message = canID_0x99FFA6CF{};
             printMessageInfo(typeid(message).name(), message.GetRawIdentifier());
 
             ara::core::Optional<enum TireConditionProprietary2_TPM_CF::TirePressThresholdDetection> (TirePressThresholdDetectionrawValue) = message.TirePressThresholdDetection.GetEnumValue(canData);
@@ -2767,7 +2762,7 @@ void processCanMessage(std::string &canId, ara::core::Span<const uint8_t> &canDa
             }
             break;
         case 0x99FF2E27: {
-            message = canID_0x99FF2E27{};
+            constexpr auto message = canID_0x99FF2E27{};
             printMessageInfo(typeid(message).name(), message.GetRawIdentifier());
 
             ara::core::Optional<enum ZM_PolicyResponse_K::ZM_PolicyID> (ZM_PolicyIDrawValue) = message.ZM_PolicyID.GetEnumValue(canData);
@@ -2797,7 +2792,7 @@ void processCanMessage(std::string &canId, ara::core::Span<const uint8_t> &canDa
             }
             break;
         case 0x99FF3F4A: {
-            message = canID_0x99FF3F4A{};
+            constexpr auto message = canID_0x99FF3F4A{};
             printMessageInfo(typeid(message).name(), message.GetRawIdentifier());
 
             ara::core::Optional<enum ZM_Status_RTC::ZM_ServiceStatus> (ZM_ServiceStatusrawValue) = message.ZM_ServiceStatus.GetEnumValue(canData);
@@ -2837,7 +2832,7 @@ void processCanMessage(std::string &canId, ara::core::Span<const uint8_t> &canDa
             }
             break;
         case 0x8CFF041D: {
-            message = canID_0x8CFF041D{};
+            constexpr auto message = canID_0x8CFF041D{};
             printMessageInfo(typeid(message).name(), message.GetRawIdentifier());
 
             ara::core::Optional<enum SecondaryWakeUp_ALM::WakeUp_RTC> (WakeUp_RTCrawValue) = message.WakeUp_RTC.GetEnumValue(canData);
@@ -2847,7 +2842,7 @@ void processCanMessage(std::string &canId, ara::core::Span<const uint8_t> &canDa
             }
             break;
         case 0x8CFF04E6: {
-            message = canID_0x8CFF04E6{};
+            constexpr auto message = canID_0x8CFF04E6{};
             printMessageInfo(typeid(message).name(), message.GetRawIdentifier());
 
             ara::core::Optional<enum SecondaryWakeUp_BCI::WakeUp_RTC> (WakeUp_RTCrawValue) = message.WakeUp_RTC.GetEnumValue(canData);
@@ -2857,7 +2852,7 @@ void processCanMessage(std::string &canId, ara::core::Span<const uint8_t> &canDa
             }
             break;
         case 0x99FF7D4A: {
-            message = canID_0x99FF7D4A{};
+            constexpr auto message = canID_0x99FF7D4A{};
             printMessageInfo(typeid(message).name(), message.GetRawIdentifier());
 
             ara::core::Optional<enum StayAlive_RTC::StayAliveRequest> (StayAliveRequestrawValue) = message.StayAliveRequest.GetEnumValue(canData);
@@ -2872,7 +2867,7 @@ void processCanMessage(std::string &canId, ara::core::Span<const uint8_t> &canDa
             }
             break;
         case 0x98FFBDEC: {
-            message = canID_0x98FFBDEC{};
+            constexpr auto message = canID_0x98FFBDEC{};
             printMessageInfo(typeid(message).name(), message.GetRawIdentifier());
 
             ara::core::Optional<enum DoorStatusProprietary_DCS::DriverDoorOpenStatus> (DriverDoorOpenStatusrawValue) = message.DriverDoorOpenStatus.GetEnumValue(canData);
@@ -2937,7 +2932,7 @@ void processCanMessage(std::string &canId, ara::core::Span<const uint8_t> &canDa
             }
             break;
         case 0x8CF00203: {
-            message = canID_0x8CF00203{};
+            constexpr auto message = canID_0x8CF00203{};
             printMessageInfo(typeid(message).name(), message.GetRawIdentifier());
 
             ara::core::Optional<enum ETC1_T::InputShaftSpeed> (InputShaftSpeedrawValue) = message.InputShaftSpeed.GetEnumValue(canData);
@@ -2947,7 +2942,7 @@ void processCanMessage(std::string &canId, ara::core::Span<const uint8_t> &canDa
             }
             break;
         case 0x99FF82E6: {
-            message = canID_0x99FF82E6{};
+            constexpr auto message = canID_0x99FF82E6{};
             printMessageInfo(typeid(message).name(), message.GetRawIdentifier());
 
             ara::core::Optional<enum BSM2_BCI::StopSignalVisual> (StopSignalVisualrawValue) = message.StopSignalVisual.GetEnumValue(canData);
@@ -2962,7 +2957,7 @@ void processCanMessage(std::string &canId, ara::core::Span<const uint8_t> &canDa
             }
             break;
         case 0x98FFB647: {
-            message = canID_0x98FFB647{};
+            constexpr auto message = canID_0x98FFB647{};
             printMessageInfo(typeid(message).name(), message.GetRawIdentifier());
 
             ara::core::Optional<enum SuspensionInformationProprietary_CMS::KneelingStatus> (KneelingStatusrawValue) = message.KneelingStatus.GetEnumValue(canData);
@@ -2972,7 +2967,7 @@ void processCanMessage(std::string &canId, ara::core::Span<const uint8_t> &canDa
             }
             break;
         case 0x98FE4EFE: {
-            message = canID_0x98FE4EFE{};
+            constexpr auto message = canID_0x98FE4EFE{};
             printMessageInfo(typeid(message).name(), message.GetRawIdentifier());
 
             ara::core::Optional<enum DoorControl1_Unknown::PositionOfDoors> (PositionOfDoorsrawValue) = message.PositionOfDoors.GetEnumValue(canData);
@@ -2992,7 +2987,7 @@ void processCanMessage(std::string &canId, ara::core::Span<const uint8_t> &canDa
             }
             break;
         case 0x98FDA5FE: {
-            message = canID_0x98FDA5FE{};
+            constexpr auto message = canID_0x98FDA5FE{};
             printMessageInfo(typeid(message).name(), message.GetRawIdentifier());
 
             ara::core::Optional<enum DoorControl2_Unknown::LockStatusOfDoor1> (LockStatusOfDoor1rawValue) = message.LockStatusOfDoor1.GetEnumValue(canData);
@@ -3147,7 +3142,7 @@ void processCanMessage(std::string &canId, ara::core::Span<const uint8_t> &canDa
             }
             break;
         case 0x98FEEE00: {
-            message = canID_0x98FEEE00{};
+            constexpr auto message = canID_0x98FEEE00{};
             printMessageInfo(typeid(message).name(), message.GetRawIdentifier());
 
             ara::core::Optional<enum EngineTemp_E::EngineCoolantTemperature> (EngineCoolantTemperaturerawValue) = message.EngineCoolantTemperature.GetEnumValue(canData);
@@ -3157,7 +3152,7 @@ void processCanMessage(std::string &canId, ara::core::Span<const uint8_t> &canDa
             }
             break;
         case 0x98FEE500: {
-            message = canID_0x98FEE500{};
+            constexpr auto message = canID_0x98FEE500{};
             printMessageInfo(typeid(message).name(), message.GetRawIdentifier());
 
             ara::core::Optional<enum EngineHoursRevolutions_E::TotalEngineHours> (TotalEngineHoursrawValue) = message.TotalEngineHours.GetEnumValue(canData);
@@ -3167,7 +3162,7 @@ void processCanMessage(std::string &canId, ara::core::Span<const uint8_t> &canDa
             }
             break;
         case 0x98F00010: {
-            message = canID_0x98F00010{};
+            constexpr auto message = canID_0x98F00010{};
             printMessageInfo(typeid(message).name(), message.GetRawIdentifier());
 
             ara::core::Optional<enum ERC1_RD::EngineRetarderTorqueMode> (EngineRetarderTorqueModerawValue) = message.EngineRetarderTorqueMode.GetEnumValue(canData);
@@ -3182,7 +3177,7 @@ void processCanMessage(std::string &canId, ara::core::Span<const uint8_t> &canDa
             }
             break;
         case 0x98FEAE30: {
-            message = canID_0x98FEAE30{};
+            constexpr auto message = canID_0x98FEAE30{};
             printMessageInfo(typeid(message).name(), message.GetRawIdentifier());
 
             ara::core::Optional<enum AIR1_APS::ServiceBrakeAirPressure1> (ServiceBrakeAirPressure1rawValue) = message.ServiceBrakeAirPressure1.GetEnumValue(canData);
@@ -3197,7 +3192,7 @@ void processCanMessage(std::string &canId, ara::core::Span<const uint8_t> &canDa
             }
             break;
         case 0x98FE582F: {
-            message = canID_0x98FE582F{};
+            constexpr auto message = canID_0x98FE582F{};
             printMessageInfo(typeid(message).name(), message.GetRawIdentifier());
 
             ara::core::Optional<enum ASC4_F::BellowPressFrontAxleLeft> (BellowPressFrontAxleLeftrawValue) = message.BellowPressFrontAxleLeft.GetEnumValue(canData);
