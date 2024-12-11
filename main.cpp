@@ -305,7 +305,7 @@ void processCanMessage(std::string &canId, ara::core::Span<const uint8_t> &canDa
     std::uint8_t rawValue8;
     std::uint16_t rawValue16;
     std::uint32_t rawValue32;
-    auto message;
+    //auto message;
 
     std::cout << "K01" << std::endl;
     std::cout << "Args: canId: " << std::hex << canId << std::endl;
