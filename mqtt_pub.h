@@ -59,7 +59,7 @@ public:
         //mosquitto_publish(mosq, nullptr, topic.c_str(), len, msg.c_str(), 0, false);
         //int rc = mosquitto_publish(mosq, nullptr, topic.c_str(), len, msg.c_str(), 0, false);
 
-        std::cout << "publishing msg: " << static_cast<const char*>(msg) << "of size " << len << std::endl;
+        std::cout << "publishing msg: \"" << static_cast<const char*>(msg) << "\" of size " << len << std::endl;
         std::cout << "Z1\n";
         std::cout << mosq << ": " << "len=" << len << std::endl;
         std::cout << mosq << ": " << "msg=" << msg << std::endl;
