@@ -14,12 +14,13 @@ public:
         if (mosq != nullptr) {
             mosquitto_disconnect(mosq);
             mosquitto_destroy(mosq);
+            mosq = nullptr;
         }
         mosquitto_lib_cleanup();
     }
 /*
     void init() {
-        if (mosq == nullptr) {
+5yy        if (mosq == nullptr) {
             std::cerr << "Mosquitto client not initialized.\n";
             return;
         }
@@ -37,11 +38,16 @@ public:
     void init(){
         //mosquitto_lib_init();
         //mosq = mosquitto_new("publisher-test", true, NULL);
+        if (mosq == nullptr) {
+            std::cerr << "Mosquitto client not initialized.\n";
+            return;
+        }
         int rc = mosquitto_connect(mosq, "localhost", 1990, 60);
         if (rc != MOSQ_ERR_SUCCESS) {
             std::cerr << "Client could not connect to broker! Error Code: " << rc << "\n";
             mosquitto_destroy(mosq);
             mosq = nullptr;
+            return;
         } else {
             std::cout << "We are now connected to the broker!\n";
         }
