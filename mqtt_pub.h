@@ -56,7 +56,7 @@ public:
     //void publish(const std::string& msg, const std::string& topic, int len) {
     void publish(const std::string &topic, const void *msg, int len) {
         if (mosq == nullptr) {
-            std::cerr << "FATAL: Seems 'mosquitto' client is not initialized.";
+            std::cerr << "FATAL: Seems 'mosquitto' client is not initialized.\n";
             std::cerr << "Ensure 'mosquitto' broker is running and on right port number before publishing data\n";
             return;
                 }
