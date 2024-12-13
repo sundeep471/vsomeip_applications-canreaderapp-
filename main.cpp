@@ -294,8 +294,6 @@ void publishSignal(const std::string& topic, const T& rawValue, mqtt msqt_pub) {
     msqt_pub.publish(topic, static_cast<const void*>(&rawValue), sizeof(rawValue));
 }
 
-//void processCanMessage(std::string &canId, const ara::core::Span<uint8_t>& canData) {
-//void processCanMessage(std::string &canId, std::string &canData) {
 void processCanMessage(std::string &canId, ara::core::Span<const uint8_t> &canData) {
     //std::cout << canId << "\n";
     //std::cout << canData[0] << "\n";
@@ -305,10 +303,9 @@ void processCanMessage(std::string &canId, ara::core::Span<const uint8_t> &canDa
     std::uint8_t rawValue8;
     std::uint16_t rawValue16;
     std::uint32_t rawValue32;
-    //auto message;
 
     std::cout << "K01" << std::endl;
-    std::cout << "Args: canId: " << std::hex << canId << std::endl;
+    //std::cout << "Args: canId: " << std::hex << canId << std::endl;
     std::cout << "Args: (canId | 0x80000000): " << std::hex << (std::stoul(canId, nullptr, 16) | 0x80000000) << std::endl;
     std::cout << "Args: canData: " << std::hex << canData[0] << canData[1] << canData[2] << canData[3] << canData[4] << canData[5] << canData[6] << std::endl;
     switch (std::stoul(canId, nullptr, 16) | 0x80000000) {
@@ -3222,6 +3219,7 @@ void processCanMessage(std::string &canId, ara::core::Span<const uint8_t> &canDa
     }
 }
 
+#if 0
 // Extract and publish individual signals as per dbc definition.
 void extract_signals(std::string &canId, ara::core::Span<const uint8_t> &canData)
 {
@@ -3230,6 +3228,7 @@ void extract_signals(std::string &canId, ara::core::Span<const uint8_t> &canData
    processCanMessage(canId, canData);
    return;
 }
+#endif
 
 void my_message_handler(const std::shared_ptr<vsomeip_v3::message>& message) {
     std::stringstream canId;
@@ -3247,7 +3246,7 @@ void my_message_handler(const std::shared_ptr<vsomeip_v3::message>& message) {
     }
 
     try {
-        if (message->get_payload()->get_length() >= 20) { // If the payload is long enough
+        if (message->get_payload()->get_length() >= PAYLOAD_MIN_LENGTH) { // If the payload is long enough
             // Extracting and printing the CAN ID in the correct order
             // CAN ID is located in 4 bytes starting from the 12th byte of the payload
             std::cout << "CAN ID = ";
@@ -3260,7 +3259,7 @@ void my_message_handler(const std::shared_ptr<vsomeip_v3::message>& message) {
             }
             std::cout << std::endl;
             std::string canId_msg = canId.str();
-            msqt_pub.publish("test/t1", static_cast<const void*>(canId_msg.c_str()), canId_msg.size());
+            //msqt_pub.publish("test/t1", static_cast<const void*>(canId_msg.c_str()), canId_msg.size());
 
             //std::cout << "CAN Data = ";
             //canData << std::hex << std::uppercase << std::setw(2) << std::setfill('0');
@@ -3275,12 +3274,12 @@ void my_message_handler(const std::shared_ptr<vsomeip_v3::message>& message) {
             //std::cout << std::endl;
             //std::string canData_msg = canData.str();
             //msqt_pub.publish(static_cast<const void*>(canData_msg.c_str()), canData_msg.size());
-            extract_signals(canId_msg, canDataSpan);
+            processCanMessage(canId, canData);
         } else {
-            std::cout << "Not 20 Bytes: len(" << message->get_payload()->get_length() << ") payload(" << payload << ")" << std::endl;
+            std::cout << "Not " << PAYLOAD_MIN_LENGTH << " Bytes: len(" << message->get_payload()->get_length() << ") payload(" << payload << ")" << std::endl;
         }
     } catch (std::exception& e) {
-        std::cerr << "Exception caught : " << e.what() << std::endl;
+        std::cerr << "Exception caught: " << e.what() << std::endl;
     }
 }
 
