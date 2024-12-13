@@ -3274,7 +3274,7 @@ void my_message_handler(const std::shared_ptr<vsomeip_v3::message>& message) {
             //std::cout << std::endl;
             //std::string canData_msg = canData.str();
             //msqt_pub.publish(static_cast<const void*>(canData_msg.c_str()), canData_msg.size());
-            processCanMessage(canId, canData);
+            processCanMessage(canId_msg, canDataSpan);
         } else {
             std::cout << "Not " << PAYLOAD_MIN_LENGTH << " Bytes: len(" << message->get_payload()->get_length() << ") payload(" << payload << ")" << std::endl;
         }
