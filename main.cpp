@@ -306,7 +306,7 @@ void processCanMessage(std::string &canId, ara::core::Span<const uint8_t> &canDa
 
     std::cout << "K01" << std::endl;
     //std::cout << "Args: canId: " << std::hex << canId << std::endl;
-    std::cout << "Args: (canId | 0x80000000): " << std::hex << "0x"(std::stoul(canId, nullptr, 16) | 0x80000000) << std::endl;
+    std::cout << "Args: (canId | 0x80000000): " << std::hex << "0x" << (std::stoul(canId, nullptr, 16) | 0x80000000) << std::endl;
     std::cout << "Args: canData: " << std::hex << "0x" << canData[0] << canData[1] << canData[2] << canData[3] << canData[4] << canData[5] << canData[6] << std::endl;
     switch (std::stoul(canId, nullptr, 16) | 0x80000000) {
         case 0x98FEE617: {
@@ -3249,8 +3249,8 @@ void my_message_handler(const std::shared_ptr<vsomeip_v3::message>& message) {
         if (message->get_payload()->get_length() >= PAYLOAD_MIN_LENGTH) { // If the payload is long enough
             // Extracting and printing the CAN ID in the correct order
             // CAN ID is located in 4 bytes starting from the 12th byte of the payload
-            std::cout << "CAN ID = ";
-            std::cout << std::hex << std::uppercase;
+            std::cout << "CAN ID = 0x";
+            //std::cout << std::hex << std::uppercase;
             canId << std::hex << std::uppercase << std::setw(2) << std::setfill('0');
             for (int i = 11; i >= 8; --i) {
                 canId << std::setw(2) << std::setfill('0') << static_cast<int>(payload[i]);
