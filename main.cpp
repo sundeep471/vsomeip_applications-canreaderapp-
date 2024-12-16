@@ -306,8 +306,8 @@ void processCanMessage(std::string &canId, ara::core::Span<const uint8_t> &canDa
 
     std::cout << "K01" << std::endl;
     //std::cout << "Args: canId: " << std::hex << canId << std::endl;
-    std::cout << "Args: (canId | 0x80000000): " << std::hex << (std::stoul(canId, nullptr, 16) | 0x80000000) << std::endl;
-    std::cout << "Args: canData: " << std::hex << canData[0] << canData[1] << canData[2] << canData[3] << canData[4] << canData[5] << canData[6] << std::endl;
+    std::cout << "Args: (canId | 0x80000000): " << std::hex << "0x"(std::stoul(canId, nullptr, 16) | 0x80000000) << std::endl;
+    std::cout << "Args: canData: " << std::hex << "0x" << canData[0] << canData[1] << canData[2] << canData[3] << canData[4] << canData[5] << canData[6] << std::endl;
     switch (std::stoul(canId, nullptr, 16) | 0x80000000) {
         case 0x98FEE617: {
             constexpr auto message = canID_0x98FEE617{};
@@ -3214,7 +3214,7 @@ void processCanMessage(std::string &canId, ara::core::Span<const uint8_t> &canDa
             }
             break;
         default:
-            std::cout << "Unknown CAN ID: " << std::hex << canId << std::endl;
+            std::cout << "Unknown CAN ID: " << std::hex << "0x" << canId << std::endl;
             break;
     }
 }
@@ -3276,7 +3276,7 @@ void my_message_handler(const std::shared_ptr<vsomeip_v3::message>& message) {
             //msqt_pub.publish(static_cast<const void*>(canData_msg.c_str()), canData_msg.size());
             processCanMessage(canId_msg, canDataSpan);
         } else {
-            std::cout << "Not " << PAYLOAD_MIN_LENGTH << " Bytes: len(" << message->get_payload()->get_length() << ") payload(" << payload << ")" << std::endl;
+            std::cout << "Not " << std::dec << PAYLOAD_MIN_LENGTH << " Bytes: len(" << message->get_payload()->get_length() << ") payload(" << payload << ")" << std::endl << std::hex << std::uppercase;
         }
     } catch (std::exception& e) {
         std::cerr << "Exception caught: " << e.what() << std::endl;
