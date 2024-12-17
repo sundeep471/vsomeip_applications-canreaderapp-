@@ -15,7 +15,6 @@
 #include "can_message.h"
 #include "can_signal.h"
 #include "mqtt_pub.h"
-//#include "dbc_map.h"
 #include "dbc_map_reduced.h"
 
 using namespace std;
@@ -304,7 +303,6 @@ void processCanMessage(std::string &canId, ara::core::Span<const uint8_t> &canDa
     std::uint16_t rawValue16;
     std::uint32_t rawValue32;
 
-    std::cout << "K01" << std::endl;
     //std::cout << "Args: canId: " << std::hex << canId << std::endl;
     std::cout << "Args: (canId | 0x80000000): " << std::hex << "0x" << (std::stoul(canId, nullptr, 16) | 0x80000000) << std::endl;
     std::cout << "Args: canData: " << std::hex << "0x" << canData[0] << canData[1] << canData[2] << canData[3] << canData[4] << canData[5] << canData[6] << std::endl;
