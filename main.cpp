@@ -3249,15 +3249,15 @@ void my_message_handler(const std::shared_ptr<vsomeip_v3::message>& message) {
         if (message->get_payload()->get_length() >= PAYLOAD_MIN_LENGTH) { // If the payload is long enough
             // Extracting and printing the CAN ID in the correct order
             // CAN ID is located in 4 bytes starting from the 12th byte of the payload
-            std::cout << "CAN ID = 0x";
-            //std::cout << std::hex << std::uppercase;
+            //std::cout << "CAN ID = 0x";
+            std::cout << std::hex << std::uppercase;
             canId << std::hex << std::uppercase << std::setw(2) << std::setfill('0');
             for (int i = 11; i >= 8; --i) {
                 canId << std::setw(2) << std::setfill('0') << static_cast<int>(payload[i]);
-                std::cout << std::setw(2) << std::setfill('0') << static_cast<int>(payload[i]);
+                //std::cout << std::setw(2) << std::setfill('0') << static_cast<int>(payload[i]);
                 if (i > 8) std::cout << " "; // Leave a space except for the last byte
             }
-            std::cout << std::endl;
+            //std::cout << std::endl;
             std::string canId_msg = canId.str();
             //msqt_pub.publish("test/t1", static_cast<const void*>(canId_msg.c_str()), canId_msg.size());
 
